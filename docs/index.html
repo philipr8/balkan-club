@@ -20,7 +20,9 @@
 <header id="navbar">
   <div class="container nav-inner">
     <a href="#home" class="nav-logo">
-      <div class="logo-fallback">ABS</div>
+      <img src="images/logo.jpg" alt="ABSQU logo" width="40" height="40"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+      <div class="logo-fallback" style="display:none">ABS</div>
       <span>ABSQU</span>
     </a>
     <nav class="nav-links" id="navLinks" aria-label="Main navigation">
@@ -46,6 +48,10 @@
      HERO
 ════════════════════════════════════════════════════════════ -->
 <section id="home" class="hero">
+  <!-- Hero background photo -->
+  <img class="hero-bg" src="images/hero-banner.jpg" alt="" aria-hidden="true"
+       fetchpriority="high"
+       style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:0;opacity:0.32;" />
   <!-- Floating geometric shapes -->
   <div class="hero-shape hero-shape-1" aria-hidden="true"></div>
   <div class="hero-shape hero-shape-2" aria-hidden="true"></div>
@@ -509,12 +515,10 @@
     <div class="gallery-grid" data-aos="fade-up" data-aos-delay="100">
 
       <button class="gallery-item"
-        data-src="https://lh3.googleusercontent.com/sitesv/APaQ0STGSKKpMk6dkVUKYLk497ynKjorphKY4IQP2IMCCMz4JL7mnCdlheg15HiB3XKZ4AVJyeNa_w-LgxCf4-kXCnFlB3nlYqRh38Jm34pM0OexQ2PsbC-6Ozzwqv8b-VNQ2yV-zioiYIkT23i0IWF_6s3NcjNw_8-myAO9xXpQROgnd32NcSLHbsjDB3I=w1280"
+        data-src="images/hero-banner.jpg"
         data-caption="ABSQU — Our Community"
         aria-label="View ABSQU community photo">
-        <img src="https://lh3.googleusercontent.com/sitesv/APaQ0STGSKKpMk6dkVUKYLk497ynKjorphKY4IQP2IMCCMz4JL7mnCdlheg15HiB3XKZ4AVJyeNa_w-LgxCf4-kXCnFlB3nlYqRh38Jm34pM0OexQ2PsbC-6Ozzwqv8b-VNQ2yV-zioiYIkT23i0IWF_6s3NcjNw_8-myAO9xXpQROgnd32NcSLHbsjDB3I=w1280"
-          alt="ABSQU community gathering" loading="lazy"
-          onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('afterbegin','<div class=\'gallery-item-fallback\' style=\'background:linear-gradient(135deg,#1B3A6B,#C1272D)\'>ABSQU Community</div>')" />
+        <img src="images/hero-banner.jpg" alt="ABSQU community gathering" loading="lazy" />
         <div class="gallery-overlay">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
           View
@@ -522,25 +526,22 @@
       </button>
 
       <button class="gallery-item"
-        data-src="https://lh3.googleusercontent.com/sitesv/APaQ0SRZaqKP8YuREWD7YFt2hlE0dT_S_t8KMRiM4xbwYn-EXcMPGB5PtGmeL-Ftk8IChhZuk3no5rTpwPW8BmkMH1MiuQnJkwOlsB6lFjHmfPe7fQEXB2NcnzdDhtit_VJDmdFKaYRyZrpae_jbG2mfoVvupxzZODYQPPoolvm76I6vrBGKuZv2Jv5R=w1280"
-        data-caption="ABSQU — Culture &amp; Celebration"
-        aria-label="View culture photo">
-        <img src="https://lh3.googleusercontent.com/sitesv/APaQ0SRZaqKP8YuREWD7YFt2hlE0dT_S_t8KMRiM4xbwYn-EXcMPGB5PtGmeL-Ftk8IChhZuk3no5rTpwPW8BmkMH1MiuQnJkwOlsB6lFjHmfPe7fQEXB2NcnzdDhtit_VJDmdFKaYRyZrpae_jbG2mfoVvupxzZODYQPPoolvm76I6vrBGKuZv2Jv5R=w1280"
-          alt="Balkan culture and celebration" loading="lazy"
-          onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('afterbegin','<div class=\'gallery-item-fallback\' style=\'background:linear-gradient(135deg,#8B1A1F,#1B3A6B)\'>Culture &amp; Celebration</div>')" />
-        <div class="gallery-overlay">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-          View
-        </div>
-      </button>
-
-      <button class="gallery-item"
-        data-src="https://lh3.googleusercontent.com/sitesv/APaQ0SSJV422fiML0VZxZUL1BVZijxZ_35Mbex89seJW7zvmlWmmcLWD9cjJKd3AjFzZprFpHQHjAjDnPxvIZj-omKq3Qoa0fw94PfGdOS_sfzRr-akyqWL0BgkhBt-f5sbsQyXkTTO42N4JG7ePSn88mT38BTiIWiiKPCGMgMUGO98rcGotd5m-Y-EkzUBGL_fAFvvh8Qr7zbYvJdHqYfhJmUOerrPX5bcC_6EfXo0=w1280"
+        data-src="images/balkans-education.jpg"
         data-caption="The Balkans — A Region Rich in History"
         aria-label="View Balkans photo">
-        <img src="https://lh3.googleusercontent.com/sitesv/APaQ0SSJV422fiML0VZxZUL1BVZijxZ_35Mbex89seJW7zvmlWmmcLWD9cjJKd3AjFzZprFpHQHjAjDnPxvIZj-omKq3Qoa0fw94PfGdOS_sfzRr-akyqWL0BgkhBt-f5sbsQyXkTTO42N4JG7ePSn88mT38BTiIWiiKPCGMgMUGO98rcGotd5m-Y-EkzUBGL_fAFvvh8Qr7zbYvJdHqYfhJmUOerrPX5bcC_6EfXo0=w1280"
-          alt="The Balkans" loading="lazy"
-          onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('afterbegin','<div class=\'gallery-item-fallback\' style=\'background:linear-gradient(135deg,#DAA520,#8B5E3C)\'>The Balkans</div>')" />
+        <img src="images/balkans-education.jpg" alt="The Balkans" loading="lazy" />
+        <div class="gallery-overlay">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          View
+        </div>
+      </button>
+
+      <button class="gallery-item"
+        data-src="images/logo.jpg"
+        data-caption="ABSQU — Association Of Balkan Students at Queen's University"
+        aria-label="View ABSQU logo">
+        <img src="images/logo.jpg" alt="ABSQU logo" loading="lazy"
+             style="object-fit:contain;background:var(--navy-deep);padding:24px;" />
         <div class="gallery-overlay">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
           View
@@ -641,7 +642,10 @@
 <footer>
   <div class="container footer-inner">
     <div class="footer-brand">
-      <div class="logo-fallback">ABS</div>
+      <img src="images/logo.jpg" alt="ABSQU logo" width="38" height="38"
+           style="border-radius:50%;object-fit:cover;border:2px solid rgba(218,165,32,0.5);"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+      <div class="logo-fallback" style="display:none">ABS</div>
       <span>ABSQU</span>
     </div>
     <p class="footer-tagline">"Because at ABSQU, everyone is family!"</p>
