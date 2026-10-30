@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Exec area — ABSQU</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#111111" />
+  <link rel="icon" href="../images/logo.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="exec.css" />
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="3"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-hash" viewBox="0 0 24 24"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h18"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5z"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+</svg>
+
+<header class="xbar">
+  <a class="brand" href="./" aria-label="ABSQU Exec area">
+    <span class="logo-disc"><img src="../images/logo.jpg" alt="" width="36" height="36" /></span>
+    <span>ABSQU <em>Exec</em></span>
+  </a>
+  <div class="xbar__right">
+    <a class="xlink" href="../">← Public site</a>
+    <div class="who" id="who" hidden>
+      <span class="avatar" id="whoAv" aria-hidden="true"></span>
+      <span class="who__txt"><b id="whoName"></b><span class="rolebadge" id="whoRole"></span></span>
+      <button class="btn btn--ghost btn--sm" id="logoutBtn" type="button"><svg class="icon"><use href="#i-out"/></svg><span>Log out</span></button>
+    </div>
+  </div>
+</header>
+
+<main id="app">
+
+  <!-- Loading -->
+  <section id="v-boot" class="center-view"><p class="muted">Loading…</p></section>
+
+  <!-- Firebase not configured -->
+  <section id="v-config" class="center-view" hidden>
+    <div class="card">
+      <span class="badge-ico"><svg class="icon"><use href="#i-lock"/></svg></span>
+      <h1>Exec area isn't switched on yet</h1>
+      <p class="muted">This site hasn't been connected to Firebase, so team login is unavailable. The public website is unaffected.</p>
+      <p class="muted small">Site owner: follow <code>FIREBASE_SETUP.md</code> to connect it.</p>
+      <a class="btn btn--ghost" href="../">Back to the public site</a>
+    </div>
+  </section>
+
+  <!-- Login -->
+  <section id="v-login" class="center-view" hidden>
+    <form class="card" id="loginForm" novalidate>
+      <span class="badge-ico"><svg class="icon"><use href="#i-lock"/></svg></span>
+      <h1>Exec login</h1>
+      <p class="muted">For ABSQU exec members only. The public site never needs a login.</p>
+      <div class="notice" id="loginNotice" role="status" hidden></div>
+      <label class="field">
+        <span>Email</span>
+        <input id="loginEmail" type="email" autocomplete="username" inputmode="email" required />
+      </label>
+      <label class="field">
+        <span>Password</span>
+        <span class="field__pw">
+          <input id="loginPw" type="password" autocomplete="current-password" required />
+          <button class="pwtoggle" id="pwToggle" type="button" aria-label="Show password" aria-pressed="false"><svg class="icon"><use href="#i-eye"/></svg></button>
+        </span>
+      </label>
+      <p class="error" id="loginError" role="alert" hidden></p>
+      <button class="btn" id="loginBtn" type="submit">Log in</button>
+      <button class="textbtn" id="resetBtn" type="button">Forgot password?</button>
+    </form>
+  </section>
+
+  <!-- Signed in, but no approved profile yet -->
+  <section id="v-pending" class="center-view" hidden>
+    <div class="card">
+      <span class="badge-ico"><svg class="icon"><use href="#i-shield"/></svg></span>
+      <h1>Waiting for approval</h1>
+      <p class="muted">You're signed in as <b id="pendEmail"></b>, but an admin hasn't activated your exec profile yet. They've been sent a request — this page will unlock by itself the moment they approve it.</p>
+      <p class="muted small">If it's taking a while, message an admin and give them this ID:</p>
+      <code class="uid" id="pendUid"></code>
+    </div>
+  </section>
+
+  <!-- Team area -->
+  <section id="v-chat" class="chat" hidden>
+    <div class="scrim" id="scrim" hidden></div>
+    <aside class="side" id="side" aria-label="Channels">
+      <div class="side__head">
+        <h2>Channels</h2>
+        <button class="iconbtn side__close" id="sideClose" type="button" aria-label="Close channel list"><svg class="icon"><use href="#i-close"/></svg></button>
+      </div>
+      <nav class="chlist" id="chList" aria-label="Channel list"></nav>
+      <div class="side__admin" id="adminBox" hidden>
+        <p class="eyebrow">Admin</p>
+        <button class="btn btn--ghost btn--sm btn--block" id="adminBtn" type="button"><svg class="icon"><use href="#i-shield"/></svg>Admin panel <span class="count" id="pendCount" hidden></span></button>
+      </div>
+    </aside>
+
+    <section class="room" aria-label="Conversation">
+      <header class="room__head">
+        <button class="iconbtn room__menu" id="sideOpen" type="button" aria-label="Open channel list"><svg class="icon"><use href="#i-menu"/></svg></button>
+        <div class="room__title">
+          <h2 id="roomName"># —</h2>
+          <p id="roomDesc" class="muted small"></p>
+        </div>
+        <span class="tag" id="roomTag" hidden></span>
+      </header>
+      <div class="msgs" id="msgs" role="log" aria-live="polite" aria-label="Messages" tabindex="0"></div>
+      <form class="composer" id="composer" autocomplete="off">
+        <div class="composer__lock" id="composerLock" hidden><svg class="icon"><use href="#i-lock"/></svg><span id="composerLockTxt"></span></div>
+        <div class="composer__row" id="composerRow">
+          <label class="sr-only" for="msgInput">Message</label>
+          <textarea id="msgInput" rows="1" maxlength="2000" placeholder="Message #channel" enterkeyhint="send"></textarea>
+          <button class="btn sendbtn" id="sendBtn" type="submit" aria-label="Send message"><svg class="icon"><use href="#i-send"/></svg></button>
+        </div>
+      </form>
+    </section>
+  </section>
+</main>
+
+<!-- Admin panel -->
+<dialog id="adminDlg" aria-labelledby="adminTitle">
+  <div class="dlg">
+    <header class="dlg__head">
+      <h2 id="adminTitle">Admin panel</h2>
+      <button class="iconbtn" id="adminClose" type="button" aria-label="Close admin panel"><svg class="icon"><use href="#i-close"/></svg></button>
+    </header>
+    <div class="tabs" role="tablist" aria-label="Admin sections">
+      <button role="tab" id="tab-members" aria-controls="pane-members" aria-selected="true" data-pane="members">Members</button>
+      <button role="tab" id="tab-pending" aria-controls="pane-pending" aria-selected="false" data-pane="pending" tabindex="-1">Approvals <span class="count" id="pendCount2" hidden></span></button>
+      <button role="tab" id="tab-channels" aria-controls="pane-channels" aria-selected="false" data-pane="channels" tabindex="-1">Channels</button>
+    </div>
+    <div class="dlg__body">
+      <div id="pane-members" role="tabpanel" aria-labelledby="tab-members"></div>
+      <div id="pane-pending" role="tabpanel" aria-labelledby="tab-pending" hidden></div>
+      <div id="pane-channels" role="tabpanel" aria-labelledby="tab-channels" hidden></div>
+    </div>
+  </div>
+</dialog>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script type="module" src="exec.js"></script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+rules_version = '2';
+
+// ABSQU Exec area — Firestore security rules.
+//
+// Role model: users/{uid} holds { name, email, role: 'admin'|'exec', active: bool }.
+// Every rule below keys off that document. A signed-in account WITHOUT an active
+// users/{uid} document can read and write nothing (except asking to be approved).
+//
+//   users/{uid}                     admin: read all, create, edit name/role/active
+//                                   anyone: read only their own document
+//   pending/{uid}                   signed-in user: create/update their own request
+//                                   admin: read, delete (approve = create users doc + delete pending)
+//   channels/{id}                   active member: read   | admin: create, edit, archive
+//   channels/{id}/messages/{mid}    active member: read, create (if channel open and
+//                                   not adminOnly)       | admin: create anywhere open, delete
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- helpers ----------
+    function signedIn() {
+      return request.auth != null;
+    }
+    function userDoc() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    function isActive() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && userDoc().active == true;
+    }
+    function isAdmin() {
+      return isActive() && userDoc().role == 'admin';
+    }
+    function channelData(cid) {
+      return get(/databases/$(database)/documents/channels/$(cid)).data;
+    }
+
+    // ---------- users ----------
+    function validNewUser(d) {
+      return d.keys().hasOnly(['name', 'email', 'role', 'active', 'createdAt'])
+        && d.keys().hasAll(['name', 'email', 'role', 'active'])
+        && d.name is string && d.name.size() > 0 && d.name.size() <= 80
+        && d.email is string && d.email.size() <= 200
+        && d.role in ['admin', 'exec']
+        && d.active is bool;
+    }
+
+    match /users/{uid} {
+      allow get: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isAdmin() && validNewUser(request.resource.data);
+      // Admins may edit name / role / active — but never their own role or
+      // active flag (prevents locking yourself out or self-deactivating).
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'role', 'active'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 80
+        && request.resource.data.role in ['admin', 'exec']
+        && request.resource.data.active is bool
+        && (request.auth.uid != uid
+            || (request.resource.data.role == resource.data.role
+                && request.resource.data.active == resource.data.active));
+      allow delete: if false;
+    }
+
+    // ---------- pending approvals ----------
+    match /pending/{uid} {
+      allow create, update: if signedIn()
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['email', 'requestedAt'])
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.requestedAt == request.time;
+      allow get, list, delete: if isAdmin();
+    }
+
+    // ---------- channels ----------
+    function validNewChannel(cid, d) {
+      return d.keys().hasOnly(['name', 'description', 'adminOnly', 'archived', 'order', 'createdAt', 'createdBy'])
+        && d.keys().hasAll(['name', 'adminOnly', 'archived'])
+        && d.name == cid
+        && d.name.matches('[a-z0-9-]{2,30}')
+        && d.adminOnly is bool
+        && d.archived is bool
+        && (!('description' in d) || (d.description is string && d.description.size() <= 140))
+        && (!('order' in d) || d.order is number);
+    }
+
+    match /channels/{cid} {
+      allow read: if isActive();
+      allow create: if isAdmin() && validNewChannel(cid, request.resource.data);
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['archived', 'adminOnly', 'description', 'order'])
+        && request.resource.data.archived is bool
+        && request.resource.data.adminOnly is bool;
+      allow delete: if false;   // archive instead
+
+      // ---------- messages ----------
+      match /messages/{mid} {
+        allow read: if isActive();
+        allow create: if isActive()
+          && request.resource.data.keys().hasOnly(['text', 'uid', 'senderName', 'senderRole', 'createdAt'])
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.senderName == userDoc().name
+          && request.resource.data.senderRole == userDoc().role
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 2000
+          && request.resource.data.createdAt == request.time
+          && channelData(cid).archived != true
+          && (channelData(cid).adminOnly != true || isAdmin());
+        allow update: if false;
+        allow delete: if isAdmin();
+      }
+    }
+
+    // Everything else is closed.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

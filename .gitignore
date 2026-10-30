@@ -3,3 +3,13 @@ Thumbs.db
 *.swp
 *.swo
 .env
+
+# Real Firebase web config — never commit. Copy docs/firebase-config.example.js
+# to docs/firebase-config.js locally; CI writes it from a GitHub secret on deploy.
+docs/firebase-config.js
+
+# Local tooling
+node_modules/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log

@@ -2,693 +2,475 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Association Of Balkan Students at Queen's University — celebrating the rich cultures, histories, and traditions of the Balkan region." />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>ABSQU — Association Of Balkan Students at Queen's University</title>
+  <meta name="description" content="ABSQU is a vibrant, inclusive Balkan community at Queen's University — culture, food, football and family across 11 countries. Because at ABSQU, everyone is family!" />
+  <meta name="theme-color" content="#111111" />
+  <link rel="canonical" href="https://philipr8.github.io/balkan-club/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ABSQU — Association Of Balkan Students at Queen's University" />
+  <meta property="og:description" content="Because at ABSQU, everyone is family! Balkan culture, community and events at Queen's University." />
+  <meta property="og:url" content="https://philipr8.github.io/balkan-club/" />
+  <meta property="og:image" content="https://philipr8.github.io/balkan-club/images/logo.jpg" />
+  <meta name="twitter:card" content="summary" />
+
+  <link rel="icon" href="images/logo.jpg" />
+  <link rel="apple-touch-icon" href="images/logo.jpg" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preconnect" href="https://flagcdn.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+  <link rel="preconnect" href="https://flagcdn.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" href="images/hero-banner.jpg" imagesrcset="images/hero-banner-900.jpg 900w, images/hero-banner.jpg 1500w" imagesizes="100vw" fetchpriority="high" />
   <link rel="stylesheet" href="style.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Association Of Balkan Students at Queen's University",
+    "alternateName": "ABSQU",
+    "url": "https://philipr8.github.io/balkan-club/",
+    "logo": "https://philipr8.github.io/balkan-club/images/logo.jpg",
+    "email": "mailto:QueensABSQU@gmail.com",
+    "parentOrganization": { "@type": "CollegeOrUniversity", "name": "Queen's University" },
+    "sameAs": ["https://www.instagram.com/abs_qu/", "https://linktr.ee/absqu"]
+  }
+  </script>
 </head>
 <body>
+<a class="skip" href="#about">Skip to content</a>
+
+<!-- Icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h18"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-go" viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M22 7l-10 7L2 7"/></symbol>
+  <symbol id="i-insta" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="3"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="3"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
+  <symbol id="i-ball" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 7.5l3.8 2.8-1.45 4.5h-4.7L8.2 10.3z"/><path d="M12 7.5V2.2M15.8 10.3l5.6-1.6M14.35 14.8l3.3 4.3M9.65 14.8l-3.3 4.3M8.2 10.3L2.6 8.7"/></symbol>
+  <symbol id="i-bowl" viewBox="0 0 24 24"><path d="M2 12h20a10 10 0 0 1-20 0z"/><path d="M8 3c0 2 2 2 2 4M14 3c0 2 2 2 2 4"/></symbol>
+  <symbol id="i-glass" viewBox="0 0 24 24"><path d="M4 3h16l-8 10z"/><path d="M12 13v8M7.5 21h9"/></symbol>
+</svg>
+
 
 <!-- ════════════════════════════════════════════════════════════
-     NAVBAR
+     NAVIGATION
 ════════════════════════════════════════════════════════════ -->
-<header id="navbar">
-  <div class="container nav-inner">
-    <a href="#home" class="nav-logo">
-      <img src="images/logo.jpg" alt="ABSQU logo" width="40" height="40"
-           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
-      <div class="logo-fallback" style="display:none">ABS</div>
+<header class="nav" id="nav">
+  <div class="wrap nav__inner">
+    <a href="#home" class="brand" aria-label="ABSQU — back to top">
+      <span class="logo-disc" style="--d:42px"><img src="images/logo.jpg" alt="" width="42" height="42" /></span>
       <span>ABSQU</span>
     </a>
-    <nav class="nav-links" id="navLinks" aria-label="Main navigation">
-      <a href="#about">About</a>
-      <a href="#countries">Countries</a>
-      <a href="#events">Events</a>
-      <a href="#team">Team</a>
-      <a href="#gallery">Gallery</a>
-      <a href="#contact">Contact</a>
-      <a href="https://www.instagram.com/abs_qu/" target="_blank" rel="noopener noreferrer" class="nav-instagram">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-        @abs_qu
-      </a>
+    <nav class="nav__links" aria-label="Main navigation">
+      <a href="#about" data-nav="about">About</a>
+      <a href="#pillars" data-nav="pillars">What we do</a>
+      <a href="#events" data-nav="events">Events</a>
+      <a href="#team" data-nav="team">Team</a>
+      <a href="#gallery" data-nav="gallery">Gallery</a>
+      <a href="#contact" data-nav="contact">Contact</a>
     </nav>
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navLinks">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="nav__cta">
+      <a class="btn btn--ghost btn--sm btn--ig" href="https://www.instagram.com/abs_qu/" target="_blank" rel="noopener noreferrer">
+        <svg class="icon"><use href="#i-insta"/></svg>@abs_qu
+      </a>
+      <a class="btn btn--sm" href="exec/" data-exec-link>
+        <svg class="icon"><use href="#i-lock"/></svg><span class="lbl">Exec Login</span>
+      </a>
+      <button class="nav__toggle" id="menuToggle" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
+        <svg class="icon"><use href="#i-menu"/></svg>
+      </button>
+    </div>
   </div>
 </header>
 
+<div class="menu" id="menu" aria-hidden="true" inert>
+  <a class="m" href="#about"   style="--i:0"><small>01</small>About</a>
+  <a class="m" href="#pillars" style="--i:1"><small>02</small>What we do</a>
+  <a class="m" href="#events"  style="--i:2"><small>03</small>Events</a>
+  <a class="m" href="#team"    style="--i:3"><small>04</small>Team</a>
+  <a class="m" href="#gallery" style="--i:4"><small>05</small>Gallery</a>
+  <a class="m" href="#contact" style="--i:5"><small>06</small>Contact</a>
+  <div class="menu__foot">
+    <a class="btn" href="exec/" data-exec-link><svg class="icon"><use href="#i-lock"/></svg><span class="lbl">Exec Login</span></a>
+    <a class="btn btn--ghost" href="https://www.instagram.com/abs_qu/" target="_blank" rel="noopener noreferrer"><svg class="icon"><use href="#i-insta"/></svg>@abs_qu</a>
+  </div>
+</div>
 
+
+<main>
 <!-- ════════════════════════════════════════════════════════════
      HERO
 ════════════════════════════════════════════════════════════ -->
-<section id="home" class="hero">
-  <!-- Hero background photo -->
-  <img class="hero-bg" src="images/hero-banner.jpg" alt="" aria-hidden="true"
-       fetchpriority="high"
-       style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:0;opacity:0.32;" />
-  <!-- Floating geometric shapes -->
-  <div class="hero-shape hero-shape-1" aria-hidden="true"></div>
-  <div class="hero-shape hero-shape-2" aria-hidden="true"></div>
-  <div class="hero-shape hero-shape-3" aria-hidden="true"></div>
-  <div class="hero-shape hero-shape-4" aria-hidden="true"></div>
-  <div class="hero-shape hero-shape-5" aria-hidden="true"></div>
-  <div class="hero-folk-overlay"       aria-hidden="true"></div>
-  <div class="hero-overlay"            aria-hidden="true"></div>
+<section class="hero" id="home" aria-label="Introduction">
+  <div class="hero__stage">
+    <div class="hero__shader" aria-hidden="true"><canvas id="aurora"></canvas></div>
+    <div class="hero__vignette" aria-hidden="true"></div>
 
-  <div class="container hero-content" data-aos="fade-up" data-aos-duration="900">
-    <div class="hero-eyebrow">
-      <span class="hero-eyebrow-dot"></span>
-      Queen's University · Kingston, ON
+    <div class="hero__media" aria-hidden="true">
+      <img src="images/hero-banner.jpg" srcset="images/hero-banner-900.jpg 900w, images/hero-banner.jpg 1500w" sizes="100vw" alt="" width="1500" height="844" fetchpriority="high" decoding="async" />
     </div>
-    <h1>Association Of<br><em>Balkan Students</em><br>at Queen's University</h1>
-    <p class="hero-tagline">"Because at ABSQU, everyone is family!"</p>
-    <div class="hero-cta">
-      <a href="#about" class="btn btn-primary">
-        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        Discover Our Story
-      </a>
-      <a href="https://www.instagram.com/abs_qu/" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light">
-        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-        Follow @abs_qu
-      </a>
+
+    <div class="hero__title">
+      <span class="logo-disc hero__badge"><img src="images/logo.jpg" alt="ABSQU logo" width="112" height="112" /></span>
+      <h1 class="hero__name"><span>ABSQU</span></h1>
+      <p class="hero__sub">Association Of Balkan Students at Queen's University</p>
     </div>
-  </div>
 
-  <a href="#about" class="scroll-hint" aria-label="Scroll down">
-    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-  </a>
-</section>
-
-
-<!-- ════════════════════════════════════════════════════════════
-     STATS BAR
-════════════════════════════════════════════════════════════ -->
-<div class="stats-bar">
-  <div class="container stats-inner">
-    <div class="stat-item">
-      <span class="stat-number"><span data-count="11">0</span><span class="stat-suffix">+</span></span>
-      <span class="stat-label">Balkan Countries</span>
+    <div class="hero__meta" aria-hidden="true">
+      <span>Queen's University</span><i class="dot"></i><span>Kingston, Ontario</span>
     </div>
-    <div class="stat-item">
-      <span class="stat-number"><span data-count="12">0</span></span>
-      <span class="stat-label">Team Members</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-number"><span data-count="100">0</span><span class="stat-suffix">+</span></span>
-      <span class="stat-label">Members</span>
-    </div>
-  </div>
-</div>
 
-
-<!-- ════════════════════════════════════════════════════════════
-     FLAGS MARQUEE
-════════════════════════════════════════════════════════════ -->
-<div class="flags-marquee" aria-label="Balkan countries represented in ABSQU">
-  <div class="flags-track">
-    <!-- Set 1 -->
-    <div class="flag-item"><img src="https://flagcdn.com/w40/mk.png" alt="North Macedonia flag" loading="lazy" />North Macedonia</div>
-    <div class="flag-item"><img src="https://flagcdn.com/w40/hr.png" alt="Croatia flag" loading="lazy" />Croatia</div>
-    <div class="flag-item"><img src="https://flagcdn.com/w40/rs.png" alt="Serbia flag" loading="lazy" />Serbia</div>
-    <div class="flag-item"><img src="https://flagcdn.com/w40/ro.png" alt="Romania flag" loading="lazy" />Romania</div>
-    <div class="flag-item"><img src="https://flagcdn.com/w40/bg.png" alt="Bulgaria flag" loading="lazy" />Bulgaria</div>
-    <div class="flag-item"><img src="https://flagcdn.com/w40/si.png" alt="Slovenia flag" loading="lazy" />Slovenia</div>
-    <div class="flag-item"><img src="https://flagcdn.com/w40/ba.png" alt="Bosnia and Herzegovina flag" loading="lazy" />Bosnia &amp; Herzegovina</div>
-    <div class="flag-item"><img src="https://flagcdn.com/w40/al.png" alt="Albania flag" loading="lazy" />Albania</div>
-    <div class="flag-item"><img src="https://flagcdn.com/w40/gr.png" alt="Greece flag" loading="lazy" />Greece</div>
-    <div class="flag-item"><img src="https://flagcdn.com/w40/xk.png" alt="Kosovo flag" loading="lazy" />Kosovo</div>
-    <div class="flag-item"><img src="https://flagcdn.com/w40/me.png" alt="Montenegro flag" loading="lazy" />Montenegro</div>
-    <!-- Set 2 (duplicate for seamless loop) -->
-    <div class="flag-item" aria-hidden="true"><img src="https://flagcdn.com/w40/mk.png" alt="" loading="lazy" />North Macedonia</div>
-    <div class="flag-item" aria-hidden="true"><img src="https://flagcdn.com/w40/hr.png" alt="" loading="lazy" />Croatia</div>
-    <div class="flag-item" aria-hidden="true"><img src="https://flagcdn.com/w40/rs.png" alt="" loading="lazy" />Serbia</div>
-    <div class="flag-item" aria-hidden="true"><img src="https://flagcdn.com/w40/ro.png" alt="" loading="lazy" />Romania</div>
-    <div class="flag-item" aria-hidden="true"><img src="https://flagcdn.com/w40/bg.png" alt="" loading="lazy" />Bulgaria</div>
-    <div class="flag-item" aria-hidden="true"><img src="https://flagcdn.com/w40/si.png" alt="" loading="lazy" />Slovenia</div>
-    <div class="flag-item" aria-hidden="true"><img src="https://flagcdn.com/w40/ba.png" alt="" loading="lazy" />Bosnia &amp; Herzegovina</div>
-    <div class="flag-item" aria-hidden="true"><img src="https://flagcdn.com/w40/al.png" alt="" loading="lazy" />Albania</div>
-    <div class="flag-item" aria-hidden="true"><img src="https://flagcdn.com/w40/gr.png" alt="" loading="lazy" />Greece</div>
-    <div class="flag-item" aria-hidden="true"><img src="https://flagcdn.com/w40/xk.png" alt="" loading="lazy" />Kosovo</div>
-    <div class="flag-item" aria-hidden="true"><img src="https://flagcdn.com/w40/me.png" alt="" loading="lazy" />Montenegro</div>
-  </div>
-</div>
-
-
-<!-- ════════════════════════════════════════════════════════════
-     FOLK DIVIDER 1
-════════════════════════════════════════════════════════════ -->
-<div class="folk-divider" aria-hidden="true">
-  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="44" preserveAspectRatio="xMidYMid meet">
-    <defs>
-      <pattern id="fp1" x="0" y="2" width="40" height="40" patternUnits="userSpaceOnUse">
-        <polygon points="20,4 36,20 20,36 4,20" fill="none" stroke="#DAA520" stroke-width="1.5"/>
-        <polygon points="20,11 29,20 20,29 11,20" fill="#C1272D" opacity="0.13"/>
-        <circle cx="20" cy="4"  r="2.2" fill="#DAA520"/>
-        <circle cx="36" cy="20" r="2.2" fill="#DAA520"/>
-        <circle cx="20" cy="36" r="2.2" fill="#DAA520"/>
-        <circle cx="4"  cy="20" r="2.2" fill="#DAA520"/>
-        <circle cx="20" cy="20" r="2.5" fill="#1B3A6B"/>
-      </pattern>
-    </defs>
-    <rect x="0" y="0" width="100%" height="44" fill="url(#fp1)" opacity="0.85"/>
-    <line x1="0" y1="1"  x2="100%" y2="1"  stroke="#DAA520" stroke-width="1.2" opacity="0.5"/>
-    <line x1="0" y1="43" x2="100%" y2="43" stroke="#1B3A6B" stroke-width="1.2" opacity="0.5"/>
-  </svg>
-</div>
-
-
-<!-- ════════════════════════════════════════════════════════════
-     ABOUT
-════════════════════════════════════════════════════════════ -->
-<section id="about">
-  <div class="container about-grid">
-    <div class="about-text" data-aos="fade-right">
-      <span class="section-label">Who We Are</span>
-      <h2>Celebrating Balkan Culture &amp; Community</h2>
-      <p>We are a vibrant and inclusive community celebrating the rich cultures, histories, and traditions of the Balkan region right here at Queen's University.</p>
-      <p>From traditional music and dance to discussions about history and geopolitics, we bring together students with Balkan roots — and anyone who wants to learn about this remarkable corner of the world.</p>
-      <p>Our family spans Macedonia, Croatia, Serbia, Romania, Bulgaria, Slovenia, Bosnia and Herzegovina, Albania, Greece, Kosovo, and Montenegro. Come as you are — you belong here.</p>
+    <div class="hero__intro">
+      <p class="hero__motto">Because at ABSQU, <em>everyone is family!</em></p>
+      <div class="hero__actions">
+        <a class="btn" href="#about">Meet the family <svg class="icon go"><use href="#i-go"/></svg></a>
+        <a class="btn btn--ghost" href="https://www.instagram.com/abs_qu/" target="_blank" rel="noopener noreferrer"><svg class="icon"><use href="#i-insta"/></svg>Follow @abs_qu</a>
+      </div>
     </div>
-    <div class="about-image-wrap" data-aos="fade-left" data-aos-delay="120">
-      <!-- TODO: save docs/images/community.jpg from Google Sites, then replace with: <img src="images/community.jpg" alt="ABSQU community" style="width:100%;height:420px;object-fit:cover;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);" /> -->
-      <div class="about-image-fallback"><!-- TODO: replace with community.jpg --></div>
-    </div>
-  </div>
 
-  <div class="container what-we-do" data-aos="fade-up" data-aos-delay="100">
-    <div class="wwd-card" data-tilt>
-      <svg class="wwd-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-      <h3>Cultural Events</h3>
-      <p>Celebrating Balkan traditions through food, music, dance, and festivals that bring our heritage to life.</p>
-    </div>
-    <div class="wwd-card" data-tilt>
-      <svg class="wwd-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      <h3>Social Gatherings</h3>
-      <p>Bar nights, potlucks, watchparties — the kind of warmth that defines Balkan hospitality.</p>
-    </div>
-    <div class="wwd-card" data-tilt>
-      <svg class="wwd-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-      <h3>Educational Initiatives</h3>
-      <p>Exploring the history, politics, and culture of southeastern Europe — shaped by empires and rich in identity.</p>
-    </div>
+    <div class="hero__scroll" aria-hidden="true"><span>Scroll</span><i></i></div>
   </div>
 </section>
 
 
 <!-- ════════════════════════════════════════════════════════════
-     COUNTRIES GRID
+     FLAGS RIBBON
 ════════════════════════════════════════════════════════════ -->
-<section id="countries">
-  <div class="container">
-    <span class="section-label" data-aos="fade-up">Our Roots</span>
-    <h2 class="section-title" data-aos="fade-up" data-aos-delay="50">The Balkans We Represent</h2>
-    <div class="countries-grid" data-aos="fade-up" data-aos-delay="100">
-      <div class="country-card" data-tilt>
-        <img class="country-flag" src="https://flagcdn.com/w80/mk.png" alt="North Macedonia flag" loading="lazy" />
-        <span class="country-name">North Macedonia</span>
+<div class="ribbon" role="region" aria-label="Balkan countries represented in ABSQU">
+  <div class="ribbon__track">
+    <ul class="ribbon__set">
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/mk.png" srcset="https://flagcdn.com/w80/mk.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />North Macedonia</li>
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/hr.png" srcset="https://flagcdn.com/w80/hr.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />Croatia</li>
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/rs.png" srcset="https://flagcdn.com/w80/rs.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />Serbia</li>
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/ro.png" srcset="https://flagcdn.com/w80/ro.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />Romania</li>
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/bg.png" srcset="https://flagcdn.com/w80/bg.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />Bulgaria</li>
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/si.png" srcset="https://flagcdn.com/w80/si.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />Slovenia</li>
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/ba.png" srcset="https://flagcdn.com/w80/ba.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />Bosnia &amp; Herzegovina</li>
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/al.png" srcset="https://flagcdn.com/w80/al.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />Albania</li>
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/gr.png" srcset="https://flagcdn.com/w80/gr.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />Greece</li>
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/xk.png" srcset="https://flagcdn.com/w80/xk.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />Kosovo</li>
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/me.png" srcset="https://flagcdn.com/w80/me.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />Montenegro</li>
+    </ul>
+    <ul class="ribbon__set" aria-hidden="true">
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/mk.png" srcset="https://flagcdn.com/w80/mk.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />North Macedonia</li>
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/hr.png" srcset="https://flagcdn.com/w80/hr.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />Croatia</li>
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/rs.png" srcset="https://flagcdn.com/w80/rs.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />Serbia</li>
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/ro.png" srcset="https://flagcdn.com/w80/ro.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />Romania</li>
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/bg.png" srcset="https://flagcdn.com/w80/bg.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />Bulgaria</li>
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/si.png" srcset="https://flagcdn.com/w80/si.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />Slovenia</li>
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/ba.png" srcset="https://flagcdn.com/w80/ba.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />Bosnia &amp; Herzegovina</li>
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/al.png" srcset="https://flagcdn.com/w80/al.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />Albania</li>
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/gr.png" srcset="https://flagcdn.com/w80/gr.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />Greece</li>
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/xk.png" srcset="https://flagcdn.com/w80/xk.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />Kosovo</li>
+      <li class="ribbon__item"><img class="flag" src="https://flagcdn.com/w40/me.png" srcset="https://flagcdn.com/w80/me.png 2x" alt="" width="30" height="22" loading="lazy" decoding="async" />Montenegro</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     01 · ABOUT  (+ countries)
+════════════════════════════════════════════════════════════ -->
+<section class="section t-cream" id="about" aria-labelledby="about-title">
+  <div class="wrap">
+    <div class="about">
+      <div class="about__text">
+        <p class="eyebrow" data-reveal><b>01</b> Who we are</p>
+        <h2 class="h2" id="about-title" data-reveal style="--i:1">One <span class="hl">family,</span> eleven countries.</h2>
+        <p class="lead" data-reveal style="--i:2">We are a vibrant and inclusive community celebrating the rich cultures, histories, and traditions of the Balkan region right here at Queen's University.</p>
+        <p data-reveal style="--i:3">From traditional music and dance to discussions about history and geopolitics, we bring together students with Balkan roots — and anyone who wants to learn about this remarkable corner of the world. Come as you are — you belong here.</p>
       </div>
-      <div class="country-card" data-tilt>
-        <img class="country-flag" src="https://flagcdn.com/w80/hr.png" alt="Croatia flag" loading="lazy" />
-        <span class="country-name">Croatia</span>
+
+      <div class="bento" data-reveal style="--i:2">
+        <div class="tile tile--red">
+          <span class="cap">Balkan countries</span>
+          <span class="num"><span data-count="11">11</span></span>
+        </div>
+        <div class="tile tile--blue">
+          <span class="cap">Exec members</span>
+          <span class="num"><span data-count="15">15</span></span>
+        </div>
+        <div class="tile tile--wide">
+          <p>Students with Balkan roots <span class="mark">&amp;</span> anyone curious. Everyone is welcome.</p>
+          <svg class="icon" style="width:40px;height:40px;color:var(--gold)" aria-hidden="true"><use href="#i-users"/></svg>
+        </div>
       </div>
-      <div class="country-card" data-tilt>
-        <img class="country-flag" src="https://flagcdn.com/w80/rs.png" alt="Serbia flag" loading="lazy" />
-        <span class="country-name">Serbia</span>
+    </div>
+
+    <div class="countries" id="countries">
+      <div class="countries__head">
+        <div>
+          <p class="eyebrow" data-reveal>Our roots</p>
+          <h3 class="h3" data-reveal style="--i:1; margin-top:14px">The Balkans we represent.</h3>
+        </div>
       </div>
-      <div class="country-card" data-tilt>
-        <img class="country-flag" src="https://flagcdn.com/w80/ro.png" alt="Romania flag" loading="lazy" />
-        <span class="country-name">Romania</span>
-      </div>
-      <div class="country-card" data-tilt>
-        <img class="country-flag" src="https://flagcdn.com/w80/bg.png" alt="Bulgaria flag" loading="lazy" />
-        <span class="country-name">Bulgaria</span>
-      </div>
-      <div class="country-card" data-tilt>
-        <img class="country-flag" src="https://flagcdn.com/w80/si.png" alt="Slovenia flag" loading="lazy" />
-        <span class="country-name">Slovenia</span>
-      </div>
-      <div class="country-card" data-tilt>
-        <img class="country-flag" src="https://flagcdn.com/w80/ba.png" alt="Bosnia and Herzegovina flag" loading="lazy" />
-        <span class="country-name">Bosnia &amp; Herzegovina</span>
-      </div>
-      <div class="country-card" data-tilt>
-        <img class="country-flag" src="https://flagcdn.com/w80/al.png" alt="Albania flag" loading="lazy" />
-        <span class="country-name">Albania</span>
-      </div>
-      <div class="country-card" data-tilt>
-        <img class="country-flag" src="https://flagcdn.com/w80/gr.png" alt="Greece flag" loading="lazy" />
-        <span class="country-name">Greece</span>
-      </div>
-      <div class="country-card" data-tilt>
-        <img class="country-flag" src="https://flagcdn.com/w80/xk.png" alt="Kosovo flag" loading="lazy" />
-        <span class="country-name">Kosovo</span>
-      </div>
-      <div class="country-card" data-tilt>
-        <img class="country-flag" src="https://flagcdn.com/w80/me.png" alt="Montenegro flag" loading="lazy" />
-        <span class="country-name">Montenegro</span>
-      </div>
+      <ul class="chips" data-reveal style="--i:2">
+        <li class="chip"><img class="flag" src="https://flagcdn.com/w40/mk.png" srcset="https://flagcdn.com/w80/mk.png 2x" alt="" width="34" height="25" loading="lazy" decoding="async" />North Macedonia</li>
+        <li class="chip"><img class="flag" src="https://flagcdn.com/w40/hr.png" srcset="https://flagcdn.com/w80/hr.png 2x" alt="" width="34" height="25" loading="lazy" decoding="async" />Croatia</li>
+        <li class="chip"><img class="flag" src="https://flagcdn.com/w40/rs.png" srcset="https://flagcdn.com/w80/rs.png 2x" alt="" width="34" height="25" loading="lazy" decoding="async" />Serbia</li>
+        <li class="chip"><img class="flag" src="https://flagcdn.com/w40/ro.png" srcset="https://flagcdn.com/w80/ro.png 2x" alt="" width="34" height="25" loading="lazy" decoding="async" />Romania</li>
+        <li class="chip"><img class="flag" src="https://flagcdn.com/w40/bg.png" srcset="https://flagcdn.com/w80/bg.png 2x" alt="" width="34" height="25" loading="lazy" decoding="async" />Bulgaria</li>
+        <li class="chip"><img class="flag" src="https://flagcdn.com/w40/si.png" srcset="https://flagcdn.com/w80/si.png 2x" alt="" width="34" height="25" loading="lazy" decoding="async" />Slovenia</li>
+        <li class="chip"><img class="flag" src="https://flagcdn.com/w40/ba.png" srcset="https://flagcdn.com/w80/ba.png 2x" alt="" width="34" height="25" loading="lazy" decoding="async" />Bosnia &amp; Herzegovina</li>
+        <li class="chip"><img class="flag" src="https://flagcdn.com/w40/al.png" srcset="https://flagcdn.com/w80/al.png 2x" alt="" width="34" height="25" loading="lazy" decoding="async" />Albania</li>
+        <li class="chip"><img class="flag" src="https://flagcdn.com/w40/gr.png" srcset="https://flagcdn.com/w80/gr.png 2x" alt="" width="34" height="25" loading="lazy" decoding="async" />Greece</li>
+        <li class="chip"><img class="flag" src="https://flagcdn.com/w40/xk.png" srcset="https://flagcdn.com/w80/xk.png 2x" alt="" width="34" height="25" loading="lazy" decoding="async" />Kosovo</li>
+        <li class="chip"><img class="flag" src="https://flagcdn.com/w40/me.png" srcset="https://flagcdn.com/w80/me.png 2x" alt="" width="34" height="25" loading="lazy" decoding="async" />Montenegro</li>
+      </ul>
+    </div>
+  </div>
+</section>
+<div class="stripe" aria-hidden="true"></div>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     02 · PILLARS
+════════════════════════════════════════════════════════════ -->
+<section class="section t-dark" id="pillars" aria-labelledby="pillars-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal><b>02</b> What we do</p>
+      <h2 class="h2" id="pillars-title" data-reveal style="--i:1">Three ways we <span class="hl">show up.</span></h2>
+    </div>
+    <div class="pillars">
+      <article class="pillar pillar--red spot" data-reveal style="--i:0">
+        <div class="pillar__top"><span class="pillar__icon"><svg class="icon"><use href="#i-star"/></svg></span><span class="pillar__idx">01</span></div>
+        <h3>Cultural Events</h3>
+        <p>Celebrating Balkan traditions through food, music, dance, and festivals that bring our heritage to life.</p>
+      </article>
+      <article class="pillar pillar--gold spot" data-reveal style="--i:1">
+        <div class="pillar__top"><span class="pillar__icon"><svg class="icon"><use href="#i-users"/></svg></span><span class="pillar__idx">02</span></div>
+        <h3>Social Gatherings</h3>
+        <p>Bar nights, potlucks, watchparties — the kind of warmth that defines Balkan hospitality.</p>
+      </article>
+      <article class="pillar pillar--green spot" data-reveal style="--i:2">
+        <div class="pillar__top"><span class="pillar__icon"><svg class="icon"><use href="#i-book"/></svg></span><span class="pillar__idx">03</span></div>
+        <h3>Educational Initiatives</h3>
+        <p>Exploring the history, politics, and culture of southeastern Europe — shaped by empires and rich in identity.</p>
+      </article>
     </div>
   </div>
 </section>
 
 
 <!-- ════════════════════════════════════════════════════════════
-     FOLK DIVIDER 2
+     03 · EVENTS
 ════════════════════════════════════════════════════════════ -->
-<div class="folk-divider" aria-hidden="true">
-  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="44" preserveAspectRatio="xMidYMid meet">
-    <defs>
-      <pattern id="fp2" x="0" y="2" width="40" height="40" patternUnits="userSpaceOnUse">
-        <polygon points="20,4 36,20 20,36 4,20" fill="none" stroke="#DAA520" stroke-width="1.5"/>
-        <polygon points="20,11 29,20 20,29 11,20" fill="#C1272D" opacity="0.13"/>
-        <circle cx="20" cy="4" r="2.2" fill="#DAA520"/><circle cx="36" cy="20" r="2.2" fill="#DAA520"/>
-        <circle cx="20" cy="36" r="2.2" fill="#DAA520"/><circle cx="4" cy="20" r="2.2" fill="#DAA520"/>
-        <circle cx="20" cy="20" r="2.5" fill="#1B3A6B"/>
-      </pattern>
-    </defs>
-    <rect x="0" y="0" width="100%" height="44" fill="url(#fp2)" opacity="0.85"/>
-    <line x1="0" y1="1" x2="100%" y2="1" stroke="#DAA520" stroke-width="1.2" opacity="0.5"/>
-    <line x1="0" y1="43" x2="100%" y2="43" stroke="#1B3A6B" stroke-width="1.2" opacity="0.5"/>
-  </svg>
-</div>
-
-
-<!-- ════════════════════════════════════════════════════════════
-     EVENTS
-════════════════════════════════════════════════════════════ -->
-<section id="events" class="section-alt">
-  <div class="container">
-    <span class="section-label" data-aos="fade-up">What's Happening</span>
-    <h2 class="section-title" data-aos="fade-up" data-aos-delay="40">Our Events</h2>
-    <div class="events-grid">
-      <article class="event-card event-card--potluck" data-aos="fade-up" data-aos-delay="0" data-tilt>
-        <div class="event-card-bg"></div>
-        <svg class="event-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+<section class="section t-cream" id="events" aria-labelledby="events-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal><b>03</b> What's happening</p>
+      <h2 class="h2" id="events-title" data-reveal style="--i:1">Come hungry. Come <span class="hl">loud.</span></h2>
+    </div>
+    <div class="events">
+      <article class="event event--red" data-reveal style="--i:0">
+        <svg class="icon event__art" aria-hidden="true"><use href="#i-bowl"/></svg>
+        <span class="event__tag">Food &amp; family</span>
         <h3>Balkan Potluck</h3>
         <p>Share traditional food from across the Balkans in a warm, family-style gathering. Burek, ajvar, baklava — all welcome.</p>
       </article>
-      <article class="event-card event-card--football" data-aos="fade-up" data-aos-delay="100" data-tilt>
-        <div class="event-card-bg"></div>
-        <svg class="event-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+      <article class="event event--blue" data-reveal style="--i:1">
+        <svg class="icon event__art" aria-hidden="true"><use href="#i-ball"/></svg>
+        <span class="event__tag">Game day</span>
         <h3>Football Watchparties</h3>
         <p>Cheer on your Balkan national teams together. There's nothing like watching the game surrounded by people who feel it as deeply as you do.</p>
       </article>
-      <article class="event-card event-card--bar" data-aos="fade-up" data-aos-delay="200" data-tilt>
-        <div class="event-card-bg"></div>
-        <svg class="event-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 22H5a2 2 0 0 1-2-2V7l3-5h11l3 5v13a2 2 0 0 1-2 2h-3"/><line x1="12" y1="11" x2="12" y2="22"/><path d="M3 7h18"/></svg>
+      <article class="event event--green" data-reveal style="--i:2">
+        <svg class="icon event__art" aria-hidden="true"><use href="#i-glass"/></svg>
+        <span class="event__tag">After dark</span>
         <h3>Bar Nights</h3>
         <p>Casual socials to connect, unwind, and celebrate Balkan spirit. Good company, great energy.</p>
       </article>
     </div>
-    <p class="events-coming-soon" data-aos="fade-up">
-      More events always on the way — follow
-      <a href="https://www.instagram.com/abs_qu/" target="_blank" rel="noopener" style="color:var(--crimson);font-weight:600;">@abs_qu</a>
-      to stay in the loop.
-    </p>
+    <p class="events-note" data-reveal>More events always on the way — follow
+      <a class="link" href="https://www.instagram.com/abs_qu/" target="_blank" rel="noopener noreferrer">@abs_qu <svg class="icon" style="width:14px;height:14px"><use href="#i-go"/></svg></a>
+      to stay in the loop.</p>
   </div>
 </section>
+<div class="stripe" aria-hidden="true"></div>
 
 
 <!-- ════════════════════════════════════════════════════════════
-     FOLK DIVIDER 3
+     04 · TEAM  (2026–27 exec)
 ════════════════════════════════════════════════════════════ -->
-<div class="folk-divider" aria-hidden="true">
-  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="44" preserveAspectRatio="xMidYMid meet">
-    <defs>
-      <pattern id="fp3" x="0" y="2" width="40" height="40" patternUnits="userSpaceOnUse">
-        <polygon points="20,4 36,20 20,36 4,20" fill="none" stroke="#DAA520" stroke-width="1.5"/>
-        <polygon points="20,11 29,20 20,29 11,20" fill="#C1272D" opacity="0.13"/>
-        <circle cx="20" cy="4" r="2.2" fill="#DAA520"/><circle cx="36" cy="20" r="2.2" fill="#DAA520"/>
-        <circle cx="20" cy="36" r="2.2" fill="#DAA520"/><circle cx="4" cy="20" r="2.2" fill="#DAA520"/>
-        <circle cx="20" cy="20" r="2.5" fill="#1B3A6B"/>
-      </pattern>
-    </defs>
-    <rect x="0" y="0" width="100%" height="44" fill="url(#fp3)" opacity="0.85"/>
-    <line x1="0" y1="1" x2="100%" y2="1" stroke="#DAA520" stroke-width="1.2" opacity="0.5"/>
-    <line x1="0" y1="43" x2="100%" y2="43" stroke="#1B3A6B" stroke-width="1.2" opacity="0.5"/>
-  </svg>
-</div>
-
-
-<!-- ════════════════════════════════════════════════════════════
-     TEAM
-════════════════════════════════════════════════════════════ -->
-<section id="team">
-  <div class="container">
-    <div class="team-header" data-aos="fade-up">
-      <span class="section-label">The People Behind ABSQU</span>
-      <h2 class="section-title">Meet Our Team</h2>
+<section class="section t-dark" id="team" aria-labelledby="team-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal><b>04</b> Exec 2026–27</p>
+      <h2 class="h2" id="team-title" data-reveal style="--i:1">Meet your <span class="hl">exec.</span></h2>
     </div>
 
-    <!-- Co-Presidents -->
-    <div class="team-exec" data-aos="fade-up" data-aos-delay="80">
-      <div class="team-card team-card--exec" data-tilt>
-        <div class="team-avatar">AJ</div>
-        <div class="team-name-row">
-          <h3>Alexander Jakov</h3>
-          <img class="heritage-flag" src="https://flagcdn.com/w40/mk.png" alt="North Macedonia" loading="lazy" />
-        </div>
-        <span class="team-role">Co-President</span>
-      </div>
-      <div class="team-card team-card--exec" data-tilt>
-        <div class="team-avatar">PR</div>
-        <div class="team-name-row">
-          <h3>Philip Radeff</h3>
-          <img class="heritage-flag" src="https://flagcdn.com/w40/mk.png" alt="North Macedonia" loading="lazy" />
-        </div>
-        <span class="team-role">Co-President</span>
-      </div>
+    <div class="presidents">
+      <article class="president" data-reveal style="--i:0">
+        <span class="avatar" aria-hidden="true">PR</span>
+        <div><span class="role">Co-President</span><h3>Philip Radeff</h3></div>
+      </article>
+      <article class="president" data-reveal style="--i:1">
+        <span class="avatar" aria-hidden="true">AJ</span>
+        <div><span class="role">Co-President</span><h3>Alexander Jakov</h3></div>
+      </article>
     </div>
 
-    <!-- Departments -->
-    <div class="team-departments" data-aos="fade-up" data-aos-delay="120">
-
-      <div class="dept-group">
-        <h4 class="dept-label">Marketing</h4>
-        <div class="dept-members">
-          <div class="team-card" data-tilt>
-            <div class="team-avatar">MP</div>
-            <div class="team-name-row">
-              <h3>Monique Popazu</h3>
-              <img class="heritage-flag" src="https://flagcdn.com/w40/ro.png" alt="Romania" loading="lazy" />
-            </div>
-            <span class="team-role">Marketing</span>
-          </div>
-          <div class="team-card" data-tilt>
-            <div class="team-avatar">RQ</div>
-            <div class="team-name-row">
-              <h3>Rovena Qosaj</h3>
-              <img class="heritage-flag" src="https://flagcdn.com/w40/al.png" alt="Albania" loading="lazy" />
-            </div>
-            <span class="team-role">Marketing</span>
-          </div>
+    <div class="depts">
+      <article class="dept" data-reveal style="--i:0">
+        <div class="dept__head"><h3>Marketing</h3><span>03</span></div>
+        <ul>
+          <li><span class="avatar" aria-hidden="true">MP</span>Monique Popazu</li>
+          <li><span class="avatar" aria-hidden="true">RQ</span>Rovena Qosaj</li>
+          <li><span class="avatar" aria-hidden="true">AD</span>Anastasija Dimovska</li>
+        </ul>
+      </article>
+      <article class="dept" data-reveal style="--i:1">
+        <div class="dept__head"><h3>Events</h3><span>03</span></div>
+        <ul>
+          <li><span class="avatar" aria-hidden="true">NT</span>Nicole Terzieva</li>
+          <li><span class="avatar" aria-hidden="true">DL</span>Daris Lohja</li>
+          <li><span class="avatar" aria-hidden="true">KT</span>Katarina Trutina</li>
+        </ul>
+      </article>
+      <article class="dept" data-reveal style="--i:2">
+        <div class="dept__head"><h3>Finance</h3><span>03</span></div>
+        <ul>
+          <li><span class="avatar" aria-hidden="true">AP</span>Angela Projkovska</li>
+          <li><span class="avatar" aria-hidden="true">SL</span>Sara Lipo</li>
+          <li><span class="avatar" aria-hidden="true">ES</span>Emma Stavre</li>
+        </ul>
+      </article>
+      <article class="dept" data-reveal style="--i:0">
+        <div class="dept__head"><h3>Student Reps</h3><span>02</span></div>
+        <ul>
+          <li><span class="avatar" aria-hidden="true">AR</span>Alina Riabova</li>
+          <li><span class="avatar" aria-hidden="true">IH</span>Ivan Hodgson</li>
+        </ul>
+      </article>
+      <article class="dept" data-reveal style="--i:1">
+        <div class="dept__head"><h3>Communications &amp; Outreach</h3><span>02</span></div>
+        <ul>
+          <li><span class="avatar" aria-hidden="true">TM</span>Teigan Minas</li>
+          <li><span class="avatar" aria-hidden="true">MD</span>Maria Diakoloukas</li>
+        </ul>
+      </article>
+      <article class="dept dept--join" data-reveal style="--i:2">
+        <div>
+          <h3>Say hi.</h3>
+          <p style="margin-top:10px">Questions, ideas, or want to get involved? We'd love to hear from you.</p>
         </div>
-      </div>
-
-      <div class="dept-group">
-        <h4 class="dept-label">Finance</h4>
-        <div class="dept-members">
-          <div class="team-card" data-tilt>
-            <div class="team-avatar">TV</div>
-            <div class="team-name-row">
-              <h3>Thomas Veljanovski</h3>
-              <img class="heritage-flag" src="https://flagcdn.com/w40/mk.png" alt="North Macedonia" loading="lazy" />
-            </div>
-            <span class="team-role">Finance</span>
-          </div>
-          <div class="team-card" data-tilt>
-            <div class="team-avatar">AP</div>
-            <div class="team-name-row">
-              <h3>Angela Projkovska</h3>
-              <img class="heritage-flag" src="https://flagcdn.com/w40/mk.png" alt="North Macedonia" loading="lazy" />
-            </div>
-            <span class="team-role">Finance</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="dept-group">
-        <h4 class="dept-label">Events</h4>
-        <div class="dept-members">
-          <div class="team-card" data-tilt>
-            <div class="team-avatar">NT</div>
-            <div class="team-name-row">
-              <h3>Nicole Terzieva</h3>
-              <img class="heritage-flag" src="https://flagcdn.com/w40/bg.png" alt="Bulgaria" loading="lazy" />
-            </div>
-            <span class="team-role">Events</span>
-          </div>
-          <div class="team-card" data-tilt>
-            <div class="team-avatar">ES</div>
-            <div class="team-name-row">
-              <h3>Emily Staroselski</h3>
-              <img class="heritage-flag" src="https://flagcdn.com/w40/bg.png" alt="Bulgaria" loading="lazy" />
-            </div>
-            <span class="team-role">Events</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="dept-group">
-        <h4 class="dept-label">Communications</h4>
-        <div class="dept-members">
-          <div class="team-card" data-tilt>
-            <div class="team-avatar">MD</div>
-            <div class="team-name-row">
-              <h3>Maria Diakoloukas</h3>
-              <img class="heritage-flag" src="https://flagcdn.com/w40/gr.png" alt="Greece" loading="lazy" />
-            </div>
-            <span class="team-role">Communications</span>
-          </div>
-          <div class="team-card" data-tilt>
-            <div class="team-avatar">IH</div>
-            <div class="team-name-row">
-              <h3>Ivan Hodgson</h3>
-              <img class="heritage-flag" src="https://flagcdn.com/w40/hr.png" alt="Croatia" loading="lazy" />
-            </div>
-            <span class="team-role">Communications</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="dept-group">
-        <h4 class="dept-label">Outreach</h4>
-        <div class="dept-members">
-          <div class="team-card" data-tilt>
-            <div class="team-avatar">AR</div>
-            <div class="team-name-row">
-              <h3>Alina Riabova</h3>
-              <img class="heritage-flag" src="https://flagcdn.com/w40/ru.png" alt="Russia" loading="lazy" />
-            </div>
-            <span class="team-role">Outreach</span>
-          </div>
-          <div class="team-card" data-tilt>
-            <div class="team-avatar">TM</div>
-            <div class="team-name-row">
-              <h3>Teigan Minas</h3>
-              <img class="heritage-flag" src="https://flagcdn.com/w40/mk.png" alt="North Macedonia" loading="lazy" />
-            </div>
-            <span class="team-role">Outreach</span>
-          </div>
-        </div>
-      </div>
-
+        <a class="link" href="mailto:QueensABSQU@gmail.com">QueensABSQU@gmail.com <svg class="icon" style="width:14px;height:14px"><use href="#i-go"/></svg></a>
+      </article>
     </div>
   </div>
 </section>
 
 
 <!-- ════════════════════════════════════════════════════════════
-     FOLK DIVIDER 4
+     05 · GALLERY  (+ Instagram feed)
 ════════════════════════════════════════════════════════════ -->
-<div class="folk-divider" aria-hidden="true">
-  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="44" preserveAspectRatio="xMidYMid meet">
-    <defs>
-      <pattern id="fp4" x="0" y="2" width="40" height="40" patternUnits="userSpaceOnUse">
-        <polygon points="20,4 36,20 20,36 4,20" fill="none" stroke="#DAA520" stroke-width="1.5"/>
-        <polygon points="20,11 29,20 20,29 11,20" fill="#C1272D" opacity="0.13"/>
-        <circle cx="20" cy="4" r="2.2" fill="#DAA520"/><circle cx="36" cy="20" r="2.2" fill="#DAA520"/>
-        <circle cx="20" cy="36" r="2.2" fill="#DAA520"/><circle cx="4" cy="20" r="2.2" fill="#DAA520"/>
-        <circle cx="20" cy="20" r="2.5" fill="#1B3A6B"/>
-      </pattern>
-    </defs>
-    <rect x="0" y="0" width="100%" height="44" fill="url(#fp4)" opacity="0.85"/>
-    <line x1="0" y1="1" x2="100%" y2="1" stroke="#DAA520" stroke-width="1.2" opacity="0.5"/>
-    <line x1="0" y1="43" x2="100%" y2="43" stroke="#1B3A6B" stroke-width="1.2" opacity="0.5"/>
-  </svg>
-</div>
+<section class="section t-cream" id="gallery" aria-labelledby="gallery-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal><b>05</b> Moments &amp; memories</p>
+      <h2 class="h2" id="gallery-title" data-reveal style="--i:1">Life at <span class="hl">ABSQU.</span></h2>
+    </div>
 
+    <div class="gallery">
+      <figure class="shot shot--hero" data-reveal>
+        <img src="images/hero-banner.jpg" srcset="images/hero-banner-900.jpg 900w, images/hero-banner.jpg 1500w" sizes="(max-width: 860px) 100vw, 66vw" alt="Aerial view of Queen's University campus and Lake Ontario in Kingston" width="1500" height="844" loading="lazy" decoding="async" />
+        <figcaption><span>Queen's University</span><span>Kingston, ON</span></figcaption>
+      </figure>
+      <figure class="shot shot--logo" data-reveal style="--i:1">
+        <img src="images/logo.jpg" alt="ABSQU logo: a map of the Balkans filled with the flags of the region" width="821" height="821" loading="lazy" decoding="async" />
+        <figcaption><span>Our crest</span></figcaption>
+      </figure>
+      <a class="shot shot--cta" href="https://www.instagram.com/abs_qu/" target="_blank" rel="noopener noreferrer" data-reveal style="--i:2">
+        <span class="cap" style="font-weight:600;font-size:.75rem;letter-spacing:.16em;text-transform:uppercase">Every event, every photo</span>
+        <span class="big">See it all on Instagram</span>
+        <span class="arrow"><svg class="icon"><use href="#i-go"/></svg></span>
+      </a>
+    </div>
 
-<!-- ════════════════════════════════════════════════════════════
-     GALLERY
-════════════════════════════════════════════════════════════ -->
-<section id="gallery" class="section-alt">
-  <div class="container">
-    <span class="section-label" data-aos="fade-up">Moments &amp; Memories</span>
-    <h2 data-aos="fade-up" data-aos-delay="40">Gallery</h2>
-    <div class="gallery-grid" data-aos="fade-up" data-aos-delay="100">
-
-      <button class="gallery-item"
-        data-src="images/hero-banner.jpg"
-        data-caption="ABSQU — Our Community"
-        aria-label="View ABSQU community photo">
-        <img src="images/hero-banner.jpg" alt="ABSQU community gathering" loading="lazy" />
-        <div class="gallery-overlay">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-          View
+    <div class="feed" id="instagram">
+      <div class="feed__head">
+        <div>
+          <p class="eyebrow" data-reveal>Stay connected</p>
+          <h3 class="h3" data-reveal style="--i:1; margin-top:14px">From the feed</h3>
+          <p data-reveal style="--i:2">Fresh from <a class="link" href="https://www.instagram.com/abs_qu/" target="_blank" rel="noopener noreferrer">@abs_qu</a></p>
         </div>
-      </button>
-
-      <button class="gallery-item"
-        data-src="images/balkans-education.jpg"
-        data-caption="The Balkans — A Region Rich in History"
-        aria-label="View Balkans photo">
-        <img src="images/balkans-education.jpg" alt="The Balkans" loading="lazy" />
-        <div class="gallery-overlay">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-          View
-        </div>
-      </button>
-
-      <button class="gallery-item"
-        data-src="images/logo.jpg"
-        data-caption="ABSQU — Association Of Balkan Students at Queen's University"
-        aria-label="View ABSQU logo">
-        <img src="images/logo.jpg" alt="ABSQU logo" loading="lazy"
-             style="object-fit:contain;background:var(--navy-deep);padding:24px;" />
-        <div class="gallery-overlay">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-          View
-        </div>
-      </button>
-
+        <a class="btn btn--ink" href="https://www.instagram.com/abs_qu/" target="_blank" rel="noopener noreferrer" data-reveal><svg class="icon"><use href="#i-insta"/></svg>View all posts</a>
+      </div>
+      <div class="feed__grid" id="feed">
+        <div><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DPgz8vOkVsP/" data-instgrm-version="14"><a href="https://www.instagram.com/p/DPgz8vOkVsP/" target="_blank" rel="noopener noreferrer">View on Instagram</a></blockquote></div>
+        <div><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DWU7_H2FRlN/" data-instgrm-version="14"><a href="https://www.instagram.com/p/DWU7_H2FRlN/" target="_blank" rel="noopener noreferrer">View on Instagram</a></blockquote></div>
+        <div><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DV9lFqalVV7/" data-instgrm-version="14"><a href="https://www.instagram.com/p/DV9lFqalVV7/" target="_blank" rel="noopener noreferrer">View on Instagram</a></blockquote></div>
+        <div><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DVtwInNEaP4/" data-instgrm-version="14"><a href="https://www.instagram.com/p/DVtwInNEaP4/" target="_blank" rel="noopener noreferrer">View on Instagram</a></blockquote></div>
+        <div><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DTHV36MEX9T/" data-instgrm-version="14"><a href="https://www.instagram.com/p/DTHV36MEX9T/" target="_blank" rel="noopener noreferrer">View on Instagram</a></blockquote></div>
+      </div>
     </div>
   </div>
 </section>
 
 
 <!-- ════════════════════════════════════════════════════════════
-     INSTAGRAM
+     06 · CONTACT
 ════════════════════════════════════════════════════════════ -->
-<section id="instagram">
-  <div class="container">
-    <span class="section-label" data-aos="fade-up">Stay Connected</span>
-    <h2 data-aos="fade-up" data-aos-delay="40">Follow Us on Instagram</h2>
-    <p class="instagram-sub" data-aos="fade-up" data-aos-delay="70">
-      See what we're up to —
-      <a href="https://www.instagram.com/abs_qu/" target="_blank" rel="noopener noreferrer" class="instagram-handle-link">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-        @abs_qu
-      </a>
-    </p>
-
-    <div class="instagram-embeds-grid" data-aos="fade-up" data-aos-delay="100">
-      <div class="insta-embed-wrap">
-        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DPgz8vOkVsP/" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:12px;box-shadow:0 4px 24px rgba(27,58,107,0.13);margin:0;max-width:100%;min-width:260px;padding:0;width:100%;">
-          <a href="https://www.instagram.com/p/DPgz8vOkVsP/" target="_blank" rel="noopener noreferrer">View on Instagram</a>
-        </blockquote>
-      </div>
-      <div class="insta-embed-wrap">
-        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DWU7_H2FRlN/" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:12px;box-shadow:0 4px 24px rgba(27,58,107,0.13);margin:0;max-width:100%;min-width:260px;padding:0;width:100%;">
-          <a href="https://www.instagram.com/p/DWU7_H2FRlN/" target="_blank" rel="noopener noreferrer">View on Instagram</a>
-        </blockquote>
-      </div>
-      <div class="insta-embed-wrap">
-        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DV9lFqalVV7/" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:12px;box-shadow:0 4px 24px rgba(27,58,107,0.13);margin:0;max-width:100%;min-width:260px;padding:0;width:100%;">
-          <a href="https://www.instagram.com/p/DV9lFqalVV7/" target="_blank" rel="noopener noreferrer">View on Instagram</a>
-        </blockquote>
-      </div>
-      <div class="insta-embed-wrap">
-        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DVtwInNEaP4/" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:12px;box-shadow:0 4px 24px rgba(27,58,107,0.13);margin:0;max-width:100%;min-width:260px;padding:0;width:100%;">
-          <a href="https://www.instagram.com/p/DVtwInNEaP4/" target="_blank" rel="noopener noreferrer">View on Instagram</a>
-        </blockquote>
-      </div>
-      <div class="insta-embed-wrap">
-        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DTHV36MEX9T/" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:12px;box-shadow:0 4px 24px rgba(27,58,107,0.13);margin:0;max-width:100%;min-width:260px;padding:0;width:100%;">
-          <a href="https://www.instagram.com/p/DTHV36MEX9T/" target="_blank" rel="noopener noreferrer">View on Instagram</a>
-        </blockquote>
-      </div>
+<section class="section t-dark" id="contact" aria-labelledby="contact-title">
+  <div class="wrap contact">
+    <p class="eyebrow" data-reveal><b>06</b> Get in touch</p>
+    <h2 class="h2" id="contact-title" data-reveal style="--i:1">Join the ABSQU <span class="hl">family.</span></h2>
+    <p class="motto" data-reveal style="--i:2">Because at ABSQU, everyone is family!</p>
+    <div class="email" data-reveal style="--i:3">
+      <a href="mailto:QueensABSQU@gmail.com">QueensABSQU@gmail.com</a>
+      <button class="copy" id="copyEmail" type="button" aria-label="Copy email address"><svg class="icon" style="width:15px;height:15px"><use href="#i-copy"/></svg><span>Copy</span></button>
     </div>
-
-    <div class="instagram-cta" data-aos="fade-up">
-      <a href="https://www.instagram.com/abs_qu/" target="_blank" rel="noopener noreferrer" class="btn-instagram">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-        View All Posts @abs_qu
-      </a>
+    <div class="contact__links" data-reveal style="--i:4">
+      <a class="btn" href="https://www.instagram.com/abs_qu/" target="_blank" rel="noopener noreferrer"><svg class="icon"><use href="#i-insta"/></svg>@abs_qu</a>
+      <a class="btn btn--ghost" href="https://linktr.ee/absqu" target="_blank" rel="noopener noreferrer"><svg class="icon"><use href="#i-link"/></svg>linktr.ee/absqu</a>
+      <a class="btn btn--ghost" href="mailto:QueensABSQU@gmail.com"><svg class="icon"><use href="#i-mail"/></svg>Email us</a>
     </div>
   </div>
 </section>
-
-
-<!-- ════════════════════════════════════════════════════════════
-     CONTACT
-════════════════════════════════════════════════════════════ -->
-<section id="contact">
-  <div class="contact-folk-bg" aria-hidden="true"></div>
-  <div class="container contact-content" data-aos="fade-up">
-    <span class="section-label">Get In Touch</span>
-    <h2>Join the ABSQU Family</h2>
-    <p class="contact-tagline">"Because at ABSQU, everyone is family!"</p>
-    <div class="contact-cards">
-      <a href="mailto:QueensABSQU@gmail.com" class="contact-card">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        <span class="card-label">Email</span>
-        <span>QueensABSQU@gmail.com</span>
-      </a>
-      <a href="tel:+16479750970" class="contact-card">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.42 2 2 0 0 1 3.58 1.25h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.79a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        <span class="card-label">Phone</span>
-        <span>647-975-0970</span>
-      </a>
-      <a href="https://www.instagram.com/abs_qu/" target="_blank" rel="noopener noreferrer" class="contact-card">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-        <span class="card-label">Instagram</span>
-        <span>@abs_qu</span>
-      </a>
-    </div>
-  </div>
-</section>
+</main>
 
 
 <!-- ════════════════════════════════════════════════════════════
      FOOTER
 ════════════════════════════════════════════════════════════ -->
-<footer>
-  <div class="container footer-inner">
-    <div class="footer-brand">
-      <img src="images/logo.jpg" alt="ABSQU logo" width="38" height="38"
-           style="border-radius:50%;object-fit:cover;border:2px solid rgba(218,165,32,0.5);"
-           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
-      <div class="logo-fallback" style="display:none">ABS</div>
-      <span>ABSQU</span>
-    </div>
-    <p class="footer-tagline">"Because at ABSQU, everyone is family!"</p>
-    <nav class="footer-links" aria-label="Footer navigation">
-      <a href="#home">Home</a>
-      <a href="#about">About</a>
-      <a href="#countries">Countries</a>
-      <a href="#events">Events</a>
-      <a href="#team">Team</a>
-      <a href="#gallery">Gallery</a>
-      <a href="#instagram">Instagram</a>
-      <a href="#contact">Contact</a>
-    </nav>
-    <div class="footer-social">
-      <a href="https://www.instagram.com/abs_qu/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+<div class="stripe" aria-hidden="true"></div>
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <div class="footer__row">
+      <a href="#home" class="brand" aria-label="ABSQU — back to top">
+        <span class="logo-disc" style="--d:46px"><img src="images/logo.jpg" alt="" width="46" height="46" loading="lazy" /></span>
+        <span>ABSQU</span>
       </a>
-      <a href="mailto:QueensABSQU@gmail.com" aria-label="Email">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      </a>
+      <nav class="footer__links" aria-label="Footer navigation">
+        <a href="#about">About</a>
+        <a href="#countries">Countries</a>
+        <a href="#events">Events</a>
+        <a href="#team">Team</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#instagram">Instagram</a>
+        <a href="#contact">Contact</a>
+        <a href="exec/" data-exec-link><span class="lbl">Exec Login</span></a>
+      </nav>
     </div>
-    <div class="footer-divider"></div>
-    <p class="footer-copy">&copy; 2025 Association Of Balkan Students at Queen's University. All rights reserved.</p>
+    <p class="motto" style="font-size:1.25rem">Because at ABSQU, everyone is family!</p>
+    <div class="footer__copy">
+      <span>&copy; <span id="year">2026</span> Association Of Balkan Students at Queen's University</span>
+      <span><a href="https://www.instagram.com/abs_qu/" target="_blank" rel="noopener noreferrer">Instagram</a> · <a href="https://linktr.ee/absqu" target="_blank" rel="noopener noreferrer">Linktree</a> · <a href="mailto:QueensABSQU@gmail.com">Email</a></span>
+    </div>
   </div>
 </footer>
 
-
-<!-- ════════════════════════════════════════════════════════════
-     LIGHTBOX
-════════════════════════════════════════════════════════════ -->
-<div id="lightbox" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Image viewer">
-  <button class="lightbox-close" aria-label="Close">&times;</button>
-  <button class="lightbox-prev" aria-label="Previous">&#8249;</button>
-  <button class="lightbox-next" aria-label="Next">&#8250;</button>
-  <figure class="lightbox-figure">
-    <img id="lightboxImg" src="" alt="" />
-    <figcaption id="lightboxCaption"></figcaption>
-  </figure>
-</div>
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-<script async src="//www.instagram.com/embed.js"></script>
-<script src="script.js"></script>
+<script src="script.js" defer></script>
 </body>
 </html>
