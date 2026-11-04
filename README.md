@@ -15,7 +15,7 @@ Website for the Association Of Balkan Students at Queen's University, plus an op
 - Fonts: Baloo 2 Bold (headings) + Poppins (body) via Google Fonts
 - Public site: zero dependencies beyond fonts and [flagcdn](https://flagcdn.com) flag images; the Instagram embed script loads lazily
 - Exec area: Firebase Authentication + Cloud Firestore (free **Spark** plan), loaded from Google's CDN **only on `/exec/`** — the public site never touches Firebase
-- Hosting: GitHub Pages, deployed by `.github/workflows/pages.yml` from `/docs`
+- Hosting: Firebase Hosting, serving `/docs` (`firebase.json`)
 
 ## Brand
 
@@ -36,10 +36,10 @@ balkan-club/
 ├── FIREBASE_SETUP.md              ← click-by-click Firebase guide (start here for the Exec area)
 ├── TEST_CHECKLIST.md              ← manual QA list
 ├── firestore.rules                ← Firestore security rules (publish in the Firebase console)
-├── netlify.toml                   ← legacy; not used by GitHub Pages
+├── firebase.json                  ← Hosting + Firestore rules config
+├── netlify.toml                   ← legacy; not used
 ├── .gitignore                     ← ignores docs/firebase-config.js
-├── .github/workflows/pages.yml    ← deploy + writes firebase-config.js from a GitHub secret
-└── docs/                          ← site root (GitHub Pages)
+└── docs/                          ← site root (what gets deployed)
     ├── index.html                 ← the whole public single-page site
     ├── style.css
     ├── script.js
