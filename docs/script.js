@@ -49,19 +49,20 @@
 
         // four ribbons, one per brand colour
         float rA=smoothstep(.58,.02,abs(q.y-.62+sin(q.x*1.7+t*.22)*.3));   // red
-        float rB=smoothstep(.55,.02,abs(q.y-.12-cos(q.x*2.2-t*.19)*.26));  // gold
-        float rC=smoothstep(.6,.02, abs(q.y+.42+sin(q.x*1.5-t*.17)*.3));   // green
-        float rD=smoothstep(.7,.02, abs(q.y+.02-cos(q.x*1.2+t*.12)*.46));  // blue
+        float rB=smoothstep(.55,.02,abs(q.y-.12-cos(q.x*2.2-t*.19)*.26));  // yellow
+        float rC=smoothstep(.6,.02, abs(q.y+.42+sin(q.x*1.5-t*.17)*.3));   // blue
+        float rD=smoothstep(.7,.02, abs(q.y+.02-cos(q.x*1.2+t*.12)*.46));  // blue wash
         float grain=fbm(q*2.6+t*.04);
 
-        vec3 col=vec3(.05,.17,.30);
-        col+=vec3(.78,.06,.18)*rA*.42;
-        col+=vec3(.95,.76,.19)*rB*.30;
-        col+=vec3(.00,.59,.43)*rC*.36;
-        col+=vec3(.06,.30,.51)*rD*.62;
-        col+=(grain-.5)*.05;
+        // white page; red, yellow and blue ribbons drift across it
+        vec3 col=vec3(1.);
+        col=mix(col,vec3(.06,.30,.51),rD*.20);  // soft blue wash
+        col=mix(col,vec3(.06,.30,.51),rC*.40);  // blue
+        col=mix(col,vec3(.78,.06,.18),rA*.46);  // red
+        col=mix(col,vec3(.95,.76,.19),rB*.80);  // yellow last, so overlaps stay warm (never green)
+        col+=(grain-.5)*.035;
         float vig=smoothstep(2.0,.4,length(p));
-        col*=.5+.5*vig;
+        col=mix(vec3(1.),col,.4+.6*vig);
         gl_FragColor=vec4(pow(max(col,vec3(0.)),vec3(.95)),1.);
       }`;
 

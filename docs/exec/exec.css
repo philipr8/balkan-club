@@ -2,7 +2,7 @@
    ABSQU Exec area — styles. Same brand tokens as the public site.
    ========================================================================== */
 :root {
-  --black: #111111; --white: #fff; --red: #C8102E; --blue: #0F4C81; --gold: #F2C230; --green: #00966E; --cream: #FFF8ED;
+  --black: #111111; --white: #fff; --red: #C8102E; --blue: #0F4C81; --gold: #F2C230; --cream: #FFF8ED;
   --head: "Baloo 2", ui-rounded, "Arial Rounded MT Bold", system-ui, sans-serif;
   --body: "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   /* White-first theme: white page, warm-cream sidebar, navy/blue for text accents, gold for buttons/selection */
@@ -50,7 +50,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0
 .avatar { --s: 36px; width: var(--s); height: var(--s); border-radius: 50%; flex: none; display: grid; place-items: center; font-family: var(--head); font-weight: 700; font-size: calc(var(--s) * 0.38); background: var(--red); color: #fff; }
 .avatar.c1 { background: var(--blue); color: #fff; }
 .avatar.c2 { background: var(--gold); color: var(--black); }
-.avatar.c3 { background: var(--green); color: var(--black); }
+.avatar.c3 { background: var(--ink); color: #fff; }
 
 /* Buttons */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 22px; border-radius: 999px; background: var(--gold); color: var(--black); border: 2px solid transparent; font-weight: 600; font-size: 0.9375rem; white-space: nowrap; transition: transform 200ms var(--ease), background 200ms, border-color 200ms, opacity 200ms; }
@@ -232,7 +232,7 @@ dialog[open] { display: grid; place-items: center; padding: 18px; }
 .switch { display: inline-flex; align-items: center; gap: 8px; font-size: 0.8125rem; font-weight: 600; color: var(--fg-2); cursor: pointer; }
 .switch input { appearance: none; width: 40px; height: 24px; border-radius: 999px; background: var(--line-2); position: relative; cursor: pointer; transition: background 160ms; margin: 0; }
 .switch input::after { content: ""; position: absolute; left: 3px; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: translate 160ms var(--ease); }
-.switch input:checked { background: var(--green); }
+.switch input:checked { background: var(--blue); }
 .switch input:checked::after { translate: 16px 0; }
 .switch input:disabled { opacity: 0.4; cursor: not-allowed; }
 .switch input:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }

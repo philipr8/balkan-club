@@ -19,14 +19,15 @@ Website for the Association Of Balkan Students at Queen's University, plus an op
 
 ## Brand
 
+The site is **white first, with red, blue and yellow** (no green, no black backgrounds).
+
 | Colour | Hex | | Colour | Hex |
 |---|---|---|---|---|
-| ABS Black | `#111111` | | Sun Gold | `#F2C230` |
-| White | `#FFFFFF` | | Balkan Green | `#00966E` |
+| White | `#FFFFFF` | | Sun Gold (yellow) | `#F2C230` |
 | Balkan Red | `#C8102E` | | Warm Cream | `#FFF8ED` |
-| Balkan Blue | `#0F4C81` | | | |
+| Balkan Blue | `#0F4C81` | | Ink (text, navy) | `#0D2B4C` / `#111111` |
 
-The logo (`docs/images/logo.jpg`) is only ever placed on white or cream, never recoloured or stretched. Tokens live at the top of `docs/style.css` (`:root`). Large dark areas (hero, footer, nav) use a deep navy `--ink` (`#0D2B4C`) rather than pure black, and the sections alternate cream, Balkan Blue, white and Balkan Red.
+The logo (`docs/images/logo.jpg`) is only ever placed on white or cream, never recoloured or stretched. Tokens live at the top of `docs/style.css` (`:root`). The hero is a white page with red/blue/yellow ribbons; the "ABSQU" title is navy on the page and turns white where it crosses the photo card.
 
 ## Project structure
 
