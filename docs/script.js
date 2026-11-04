@@ -303,7 +303,8 @@
       }
       const top = mk('div', 'igpost__top'), chip = mk('span', 'igpost__chip'); chip.append(svg('i-insta')); top.append(chip);
       if (p.mediaType === 'VIDEO' || p.mediaType === 'CAROUSEL_ALBUM') { const b = mk('span', 'igpost__badge'); b.append(svg(p.mediaType === 'VIDEO' ? 'i-play' : 'i-layers')); top.append(b); }
-      const meta = mk('div', 'igpost__meta'), when = p.timestamp ? new Date(p.timestamp) : null;
+      // Behold sends "+0000" (no colon); Safari only accepts "+00:00"
+      const meta = mk('div', 'igpost__meta'), when = p.timestamp ? new Date(String(p.timestamp).replace(/([+-]\d{2})(\d{2})$/, '$1:$2')) : null;
       const view = mk('span', null, 'View post '); view.append(svg('i-go'));
       meta.append(mk('span', null, when && !isNaN(when) ? dateFmt.format(when) : '@abs_qu'), view);
       const capEl = mk('div', 'igpost__cap'); if (cap) capEl.append(mk('p', null, cap)); capEl.append(meta);

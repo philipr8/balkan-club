@@ -2,7 +2,7 @@
 
 The "From the feed" section on the public site shows the **6 most recent @abs_qu posts as cards**, automatically, using [Behold](https://behold.so). Behold is a third-party service that reads your Instagram account and serves the latest posts as a small data file; the website turns that into the cards you see. You do the one-time connection yourself (it needs your Instagram login, which this project never sees).
 
-Until you finish this, the section shows a "Follow @abs_qu" card instead. Nothing is broken.
+**Status: connected** (feed URL is set in `docs/index.html`). If you ever need to redo it, the steps below still apply. With no feed URL, the section shows a "Follow @abs_qu" card instead; nothing is broken.
 
 > **Cost:** Behold has a free plan. When this was set up, its pricing page listed: **$0/month, 1 connected account, 1 feed, up to 6 posts, refreshed once a day, about 1,200 feed views a month**, with a small Behold logo on hover. Check [behold.so/pricing](https://behold.so/pricing) yourself before you sign up — plans change. Don't pick a paid plan unless you want one. The website keeps a copy of the feed in each visitor's browser for 3 hours, so repeat visits don't use up your monthly views.
 
