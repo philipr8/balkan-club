@@ -1,6 +1,6 @@
 # Firebase setup — ABSQU Exec area
 
-A click-by-click guide. It assumes you have **never opened the Firebase console**. Budget about 30–40 minutes, most of it creating the 15 accounts.
+A click-by-click guide. It assumes you have **never opened the Firebase console**. Budget about 40–50 minutes, most of it creating the 15 accounts.
 
 > **Cost:** everything here fits Firebase's free **Spark** plan. You will never be asked for a credit card. If a screen ever asks you to "Upgrade" or "Add billing", stop and don't — you don't need it.
 >
@@ -15,7 +15,8 @@ A click-by-click guide. It assumes you have **never opened the Firebase console*
 | **Firebase Authentication** (Email/Password) | The login. You create each person's account yourself; nobody can sign themselves up into the team area. |
 | **Firestore database** | Stores each person's role (`users` collection), the chat channels and the messages — live-updating. |
 | **Security rules** (`firestore.rules`) | The server-side lock. Even if someone edited the website code in their browser, the database still refuses anything their role doesn't allow. |
-| **Config file** | A small file telling the website *which* Firebase project to talk to. It is **never committed to git**. |
+| **Firebase Hosting** | Serves the website itself, free, at `https://<your-project-id>.web.app` (no GitHub Pages involved). |
+| **Config file** | A small file telling the website *which* Firebase project to talk to. It is **never committed to git**; it lives only on your computer and is uploaded when you deploy. |
 
 ### How roles work (and why)
 
@@ -47,7 +48,7 @@ I chose this over Firebase *custom claims* because setting custom claims require
 
 1. On the project's home page ("Project Overview") click the **`</>`** icon (labelled **Web**).
 2. **App nickname:** `ABSQU site`.
-3. **Do NOT tick** "Also set up Firebase Hosting" (the site lives on GitHub Pages).
+3. **Tick** "Also set up Firebase Hosting" — the site will be served from Firebase. (If you forget, no problem; Part 7 sets it up from the command line.)
 4. Click **Register app**.
 5. You'll see a code block containing `const firebaseConfig = { apiKey: "...", authDomain: "...", projectId: "...", storageBucket: "...", messagingSenderId: "...", appId: "..." };`
    **Leave this tab open** (or copy the six values into a note) — you'll paste them in Part 7. You can always get them back later: ⚙️ **gear icon → Project settings → General → scroll to "Your apps"**.
@@ -60,7 +61,7 @@ I chose this over Firebase *custom claims* because setting custom claims require
 3. Click **Email/Password**.
 4. Switch the **first** toggle ("Email/Password") to **Enabled**. Leave "Email link (passwordless sign-in)" **off**.
 5. Click **Save**.
-6. Still in Authentication, open **Settings → Authorized domains → Add domain** and add `philipr8.github.io`. (`localhost` is already there for local testing.)
+6. Still in Authentication, open **Settings → Authorized domains**. `localhost`, `<project-id>.web.app` and `<project-id>.firebaseapp.com` are already listed automatically — you don't need to add anything. (If you later connect your own custom domain, add it here too.)
 
 ## Part 4 — Create the Firestore database
 
@@ -72,6 +73,8 @@ I chose this over Firebase *custom claims* because setting custom claims require
 6. Click **Create**. Wait until the empty database screen appears.
 
 ## Part 5 — Publish the security rules
+
+> Shortcut: `firebase deploy` in Part 7 publishes these rules for you. Do this manual version only if you want to see them in the console first.
 
 1. In **Firestore Database**, open the **Rules** tab.
 2. Click inside the editor, select everything (`Cmd+A` / `Ctrl+A`) and **delete** it.
@@ -156,41 +159,63 @@ You create the **two admin** profiles manually — this is the one thing the web
 
 The first time an **admin** signs in, the site automatically creates `#announcements` (admins-post-only), `#general`, `#events`, `#marketing` and `#finance`. You don't create these by hand. Admins can add/archive more later from **Admin panel → Channels**.
 
-## Part 7 — Put the config in the project
+## Part 7 — Put the site on Firebase Hosting
 
-### 7a. For testing on your own computer
+The site is served by **Firebase Hosting** (free on the Spark plan) at **`https://<your-project-id>.web.app`**. You deploy from your own computer with the Firebase command-line tool, which is already installed on your Mac (`firebase --version` to check; otherwise `npm install -g firebase-tools`). The repo already contains `firebase.json` (serve the `docs/` folder, publish `firestore.rules`, security headers).
+
+### 7a. Make your local config file (never committed)
 
 1. In the repo, copy **`docs/firebase-config.example.js`** to **`docs/firebase-config.js`**.
 2. Open the new file and replace each `YOUR_...` placeholder with the matching value from Part 2 (keep the quotes and commas).
-3. Run the site locally:
-   ```bash
-   python3 -m http.server 8000 --directory docs
-   ```
-4. Open **http://localhost:8000/exec/** and sign in.
+3. `docs/firebase-config.js` is in `.gitignore`, so git never sees it (`git status` must not list it) — but `firebase deploy` **does** upload it, which is how the live site learns which project to talk to.
 
-`docs/firebase-config.js` is listed in `.gitignore`, so git will never pick it up. (Check with `git status` — it should not appear.)
+### 7b. Log in and link the folder to your project
 
-### 7b. For the live GitHub Pages site (no key in the repo)
+Run these in Terminal, in the repo folder (`cd ~/balkan-club`):
 
-A static site can't read a file that isn't in the repo — so a GitHub Action writes the config file **at deploy time** from a secret. This is already set up in `.github/workflows/pages.yml`. You do three one-time things in GitHub:
+```bash
+firebase login
+firebase use --add
+```
 
-1. **Add the secret.** Repo → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**.
-   - **Name:** `FIREBASE_CONFIG_JSON`
-   - **Secret:** the config as one line of JSON — note the quoted keys:
-     ```json
-     {"apiKey":"AIza...","authDomain":"absqu-exec.firebaseapp.com","projectId":"absqu-exec","storageBucket":"absqu-exec.firebasestorage.app","messagingSenderId":"123456789","appId":"1:123456789:web:abc123"}
-     ```
-   - Click **Add secret**.
-2. **Switch Pages to deploy from Actions.** Repo → **Settings** → **Pages** → **Build and deployment** → **Source** → choose **GitHub Actions**.
-3. **Deploy.** Push to `main` (or go to the **Actions** tab → **Deploy to GitHub Pages** → **Run workflow**). When the run turns green, visit **https://philipr8.github.io/balkan-club/exec/**.
+- `firebase login` opens a browser — sign in with the same Google account that owns the project.
+- `firebase use --add` → pick your project from the list → give it the alias `default`. This creates `.firebaserc` (just your project ID, not secret — fine to commit).
 
-> **Until you do step 2**, the old "deploy from `/docs` on `main`" setting stays in effect: the public site updates normally, but the exec area will say *"isn't switched on yet"* because the config file isn't in the deployed files. Nothing breaks.
+### 7c. Deploy
+
+```bash
+firebase deploy
+```
+
+This does two things at once: uploads the website to Hosting **and** publishes `firestore.rules` (so Part 5's copy-paste is optional from now on). When it finishes it prints **Hosting URL: https://<project-id>.web.app**. Open it, then open `/exec/` on the same address to log in.
+
+**Updating the site later:** edit files in `docs/`, run `firebase deploy` again. To push only the website: `firebase deploy --only hosting`; only the rules: `firebase deploy --only firestore:rules`.
+
+### 7d. After the first deploy
+
+Tell me (or edit `docs/index.html` yourself) your final `https://<project-id>.web.app` address so the "canonical", social-share and search-engine tags near the top of `docs/index.html` point at it instead of the old GitHub address. Then deploy once more.
+
+### 7e. Your own domain (optional)
+
+The free `web.app` address needs nothing else. If you'd rather use something like `absqu.ca`, you must buy that name from a registrar (a yearly fee — that's outside Firebase's free tier, so only do it if you want to). Then: Firebase console → **Hosting → Add custom domain** and follow the DNS instructions, and add the domain under **Authentication → Settings → Authorized domains**.
+
+### 7f. The old GitHub address
+
+`https://philipr8.github.io/balkan-club/` keeps working with whatever was last pushed to `main` until you turn it off (repo → **Settings → Pages → Unpublish site**). It won't update any more, so once the Firebase site is confirmed working, unpublish it so nobody lands on a stale copy — and update the link in your Instagram bio / Linktree.
 
 #### "Is the config really secret?" — an honest note
 
-A Firebase **web** config (the `apiKey` etc.) is an *identifier*, not a password. Any website that uses Firebase from the browser exposes it to visitors — that's unavoidable and normal. What actually protects your data is **(1)** the security rules and **(2)** that accounts only exist if you created them. Keeping it out of git is good hygiene (and what you asked for), but don't panic if someone sees it in their browser's dev tools.
+A Firebase **web** config (the `apiKey` etc.) is an *identifier*, not a password. Any website that uses Firebase from the browser exposes it to visitors — that's unavoidable and normal, and it will be visible in the deployed `firebase-config.js`. What actually protects your data is **(1)** the security rules and **(2)** that accounts only exist if you created them. Keeping it out of git is good hygiene (and what you asked for), but don't panic if someone sees it in their browser's dev tools.
 
-For extra protection (optional, 2 minutes): Google Cloud Console → **APIs & Services → Credentials** → click the "Browser key" → **Application restrictions → Websites** → add `https://philipr8.github.io/*` and `http://localhost:8000/*` → Save.
+For extra protection (optional, 2 minutes): Google Cloud Console → **APIs & Services → Credentials** → click the "Browser key" → **Application restrictions → Websites** → add `https://<project-id>.web.app/*`, `https://<project-id>.firebaseapp.com/*` and `http://localhost:8000/*` → Save.
+
+### 7g. Try it on your computer first (optional)
+
+```bash
+python3 -m http.server 8000 --directory docs
+```
+
+Open **http://localhost:8000/exec/** (needs the 7a config file).
 
 ---
 
@@ -209,8 +234,8 @@ For extra protection (optional, 2 minutes): Google Cloud Console → **APIs & Se
 
 | What you see | Likely cause / fix |
 |---|---|
-| *"Exec area isn't switched on yet"* | `docs/firebase-config.js` is missing or still has `YOUR_…` placeholders (local), or the GitHub secret / Pages "GitHub Actions" source isn't set (live). Redo Part 7. |
-| *"Couldn't read your profile — the Firestore security rules may not be published yet"* | Redo **Part 5** and click **Publish**. |
+| *"Exec area isn't switched on yet"* | `docs/firebase-config.js` was missing or still had `YOUR_…` placeholders when you ran `firebase deploy`. Fix the file and deploy again (Part 7). |
+| *"Couldn't read your profile — the Firestore security rules may not be published yet"* | Run `firebase deploy --only firestore:rules` (or redo Part 5 in the console). |
 | *"Couldn't log you in. Please try again."* | Usually Email/Password isn't enabled (Part 3), or the config values are from a different project. |
 | **"Incorrect email or password."** | Correct behaviour for a wrong password *or* an unknown email (deliberately the same message). Reset the password in Authentication → Users. |
 | Stuck on **"Waiting for approval"** | They have an account but no profile. An admin approves them (Part 6c), or you add their `users/<UID>` document by hand. |

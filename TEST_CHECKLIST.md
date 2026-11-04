@@ -2,7 +2,7 @@
 
 Work through this after setup (`FIREBASE_SETUP.md`) and again after any change to the site, `exec/` code, or `firestore.rules`. Tick each box. You need **two different browsers or profiles** (e.g. Chrome + a private window, or Chrome + Safari) for the real-time tests, and one admin + one exec account.
 
-Test on the live URL **https://philipr8.github.io/balkan-club/** and, if you've changed code, locally too (`python3 -m http.server 8000 --directory docs`).
+Test on the live URL **https://<project-id>.web.app/** and, if you've changed code, locally too (`python3 -m http.server 8000 --directory docs`).
 
 ---
 
@@ -14,7 +14,7 @@ Test on the live URL **https://philipr8.github.io/balkan-club/** and, if you've 
 - [ ] **Thomas Veljanovski** and **Emily Staroselski** appear nowhere (try `Ctrl/Cmd+F` for each).
 - [ ] Motto "Because at ABSQU, everyone is family!" shows in the hero and the contact section; all 11 countries are listed.
 - [ ] Links work: `@abs_qu` → https://www.instagram.com/abs_qu/ · `QueensABSQU@gmail.com` opens a mail draft · `linktr.ee/absqu` opens Linktree.
-- [ ] Old hash links still land correctly: `…/balkan-club/#about`, `#countries`, `#events`, `#team`, `#gallery`, `#instagram`, `#contact`.
+- [ ] Old hash links still land correctly: `…web.app/#about`, `#countries`, `#events`, `#team`, `#gallery`, `#instagram`, `#contact`.
 - [ ] Phone (or browser dev tools at 390 px wide): no sideways scrolling, menu button opens a full-screen menu, text is readable.
 - [ ] Dev tools → **Network** tab, reload: **no requests** to `gstatic.com/firebasejs`, `firestore.googleapis.com` or `identitytoolkit` on the public page (Firebase only loads on `/exec/`).
 - [ ] The nav shows an **Exec Login** button.
@@ -93,9 +93,9 @@ git status --short                               # firebase-config.js must NOT b
 
 - [ ] All five behave as described.
 - [ ] `docs/firebase-config.example.js` contains only `YOUR_…` placeholders.
-- [ ] GitHub → repo → **Settings → Secrets and variables → Actions** shows `FIREBASE_CONFIG_JSON`.
+- [ ] `docs/firebase-config.js` exists on your computer only; `https://<project-id>.web.app/exec/` shows the login form (not "isn't switched on yet").
 - [ ] Rename your local `docs/firebase-config.js` away and reload `/exec/` locally → shows "Exec area isn't switched on yet" and the **public site still works**. Rename it back.
-- [ ] On the live site, view source of `/exec/exec.js` — it contains no keys (the config is only in the separately generated `firebase-config.js`).
+- [ ] On the live site, view source of `/exec/exec.js` — it contains no keys (the config is only in the separate `firebase-config.js`).
 
 ---
 
@@ -106,4 +106,4 @@ Against the Firebase emulators — not part of the repo, so they don't add any d
 - **73 security-rule checks** (all pass): signed-out, exec, admin, deactivated, and profile-less accounts, including attack attempts — spoofing another sender's name/role/uid, backdating timestamps, extra fields, 2,000+ character messages, self-promotion to admin, creating one's own profile, reading others' profiles, posting in archived/non-existent channels, editing/deleting messages, and renaming/deleting channels.
 - **51 end-to-end browser checks** (all pass): login/wrong password/no account enumeration, first-run channel setup, announcements read-only for execs, real-time delivery between two live sessions, persistence across reload, logout, admin panel (create/archive channel, approve, role change, deactivate — each reflected live on the other person's screen), and mobile layout.
 
-Not tested (needs your real accounts/inboxes): the password-reset email, the live GitHub Pages deploy with your secret, and the look on your own phone/browsers.
+Not tested (needs your real accounts/inboxes): the password-reset email, the live Firebase Hosting deploy, and the look on your own phone/browsers.

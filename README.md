@@ -2,8 +2,8 @@
 
 Website for the Association Of Balkan Students at Queen's University, plus an optional private **Exec area** (team chat) for the club's executive.
 
-**Live site:** https://philipr8.github.io/balkan-club/  
-**Exec area:** https://philipr8.github.io/balkan-club/exec/  
+**Live site:** `https://<project-id>.web.app` (Firebase Hosting)  
+**Exec area:** `https://<project-id>.web.app/exec/`  
 **Instagram:** https://www.instagram.com/abs_qu/ · **Linktree:** https://linktr.ee/absqu  
 **Email:** QueensABSQU@gmail.com
 
@@ -92,18 +92,17 @@ A private, optional team area at `/exec/` — login is never required to view th
 - **Roles:** `admin` (Philip Radeff, Alexander Jakov) and `exec` (everyone else), stored in Firestore at `users/{uid}` as `{ name, email, role, active }`. Enforced by `firestore.rules` on the server.
 - **Chat:** channels `#announcements` (admin-post-only), `#general`, `#events`, `#marketing`, `#finance`; real-time via Firestore listeners; sender name + timestamp on every message.
 - **Admins** can create/archive channels, view members, change roles, deactivate members, approve new sign-ins, post announcements and delete messages.
-- **Config is never committed:** `docs/firebase-config.js` is gitignored; on deploy, the GitHub Action generates it from the `FIREBASE_CONFIG_JSON` repository secret. If it's absent, the public site is unaffected and `/exec/` just says it isn't switched on.
+- **Config is never committed:** `docs/firebase-config.js` is gitignored; it exists only on your computer and is uploaded by `firebase deploy`. If it's absent, the public site is unaffected and `/exec/` just says it isn't switched on.
 
 Full walkthrough: **[FIREBASE_SETUP.md](FIREBASE_SETUP.md)**. QA list: **[TEST_CHECKLIST.md](TEST_CHECKLIST.md)**.
 
 ## Deployment
 
-GitHub Pages is deployed by `.github/workflows/pages.yml` on every push to `main`:
+The site is hosted on **Firebase Hosting** (free Spark plan) — see `firebase.json`. After the one-time setup in [FIREBASE_SETUP.md](FIREBASE_SETUP.md):
 
 ```bash
-git add .
-git commit -m "Update site content"
-git push
+firebase deploy                  # website + Firestore rules
+firebase deploy --only hosting   # website only
 ```
 
-**One-time setting:** repo **Settings → Pages → Build and deployment → Source: GitHub Actions** (required so the workflow can inject the Firebase config). Watch runs at https://github.com/philipr8/balkan-club/actions.
+Commit changes to git as usual (`git add . && git commit && git push`); pushing does **not** deploy — `firebase deploy` does.
