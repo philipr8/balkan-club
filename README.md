@@ -13,8 +13,8 @@ Website for the Association Of Balkan Students at Queen's University, plus an op
 
 - Plain HTML5, CSS3, vanilla JavaScript — **no framework, no build step**
 - Fonts: Baloo 2 Bold (headings) + Poppins (body) via Google Fonts
-- Public site: zero dependencies beyond fonts and [flagcdn](https://flagcdn.com) flag images; the Instagram embed script loads lazily
-- Exec area: Firebase Authentication + Cloud Firestore (free **Spark** plan), loaded from Google's CDN **only on `/exec/`** — the public site never touches Firebase
+- Public site: no libraries. Outside services: Google Fonts, [flagcdn](https://flagcdn.com) flag images, [Behold](https://behold.so) for the Instagram cards (optional, see `INSTAGRAM_SETUP.md`), and one read-only Firestore request (country flags) when the Team section scrolls into view
+- Exec area: Firebase Authentication + Cloud Firestore (free **Spark** plan), loaded from Google's CDN **only on `/exec/`** — the public site never loads the Firebase SDK
 - Hosting: Firebase Hosting, serving `/docs` (`firebase.json`)
 
 ## Brand
@@ -26,7 +26,7 @@ Website for the Association Of Balkan Students at Queen's University, plus an op
 | Balkan Red | `#C8102E` | | Warm Cream | `#FFF8ED` |
 | Balkan Blue | `#0F4C81` | | | |
 
-The logo (`docs/images/logo.jpg`) is only ever placed on white or cream, never recoloured or stretched. Tokens live at the top of `docs/style.css` (`:root`).
+The logo (`docs/images/logo.jpg`) is only ever placed on white or cream, never recoloured or stretched. Tokens live at the top of `docs/style.css` (`:root`). Large dark areas (hero, footer, nav) use a deep navy `--ink` (`#0D2B4C`) rather than pure black, and the sections alternate cream, Balkan Blue, white and Balkan Red.
 
 ## Project structure
 
@@ -34,6 +34,7 @@ The logo (`docs/images/logo.jpg`) is only ever placed on white or cream, never r
 balkan-club/
 ├── README.md
 ├── FIREBASE_SETUP.md              ← click-by-click Firebase guide (start here for the Exec area)
+├── INSTAGRAM_SETUP.md             ← connect the live Instagram cards (Behold)
 ├── TEST_CHECKLIST.md              ← manual QA list
 ├── firestore.rules                ← Firestore security rules (publish in the Firebase console)
 ├── firebase.json                  ← Hosting + Firestore rules config
@@ -82,7 +83,9 @@ Everything public is in `docs/index.html`; find sections by their `id`:
 
 **Adding gallery photos:** drop the image in `docs/images/`, copy a `<figure class="shot">…</figure>` block in the `.gallery` grid (use `shot--hero` for a big tile, plain `shot` for a small one), and set `src`, `alt` and the caption.
 
-**Instagram posts:** the feed grid holds `<blockquote class="instagram-media" data-instgrm-permalink="…">` blocks — swap in new post URLs.
+**Instagram posts:** shown automatically from a Behold feed — paste its URL into `data-feed` on `#feed` (steps in [INSTAGRAM_SETUP.md](INSTAGRAM_SETUP.md)). With no feed URL, a "Follow @abs_qu" card shows.
+
+**Team flags:** each exec picks their country in the exec area; the site adds the flag next to the matching name in `#team` (names are matched, so keep them spelled the same as in the exec Members list).
 
 ## Exec area
 
@@ -90,7 +93,9 @@ A private, optional team area at `/exec/` — login is never required to view th
 
 - **Login:** Firebase Email/Password. Accounts are created by you in the Firebase console; there's no public sign-up.
 - **Roles:** `admin` (Philip Radeff, Alexander Jakov) and `exec` (everyone else), stored in Firestore at `users/{uid}` as `{ name, email, role, active }`. Enforced by `firestore.rules` on the server.
-- **Chat:** channels `#announcements` (admin-post-only), `#general`, `#events`, `#marketing`, `#finance`; real-time via Firestore listeners; sender name + timestamp on every message.
+- **Chat:** channels only — no direct messages. Club: `#announcements` (admin-post-only), `#general`, `#resources`; Teams: `#events`, `#marketing`, `#finance`, `#student-reps`, `#communications`. Real-time via Firestore listeners; sender name, flag and timestamp on every message.
+- **Files & photos** in every channel you can post in (paperclip, drag-and-drop or paste): photos are shrunk automatically, other files up to 2 MB. Stored in Firestore (not Cloud Storage, which would need the paid plan).
+- **Country prompt:** on first login each person is asked where they're from (up to two flags) — shown on the public Team section and in chat.
 - **Admins** can create/archive channels, view members, change roles, deactivate members, approve new sign-ins, post announcements and delete messages.
 - **Config is never committed:** `docs/firebase-config.js` is gitignored; it exists only on your computer and is uploaded by `firebase deploy`. If it's absent, the public site is unaffected and `/exec/` just says it isn't switched on.
 

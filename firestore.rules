@@ -13,6 +13,10 @@ rules_version = '2';
 //   channels/{id}                   active member: read   | admin: create, edit, archive
 //   channels/{id}/messages/{mid}    active member: read, create (if channel open and
 //                                   not adminOnly)       | admin: create anywhere open, delete
+//   .../messages/{mid}/chunks/{n}   the bytes of an attached file (base64 pieces). Written in the
+//                                   same batch as the message by the same sender; active members read.
+//   team/{uid}                      PUBLIC read (name + flag codes only, shown on the website).
+//                                   Each member writes only their own; admins may rename/remove.
 service cloud.firestore {
   match /databases/{database}/documents {
 
@@ -95,22 +99,80 @@ service cloud.firestore {
       allow delete: if false;   // archive instead
 
       // ---------- messages ----------
+      // A message is text, an attachment, or both. An attachment's bytes live in
+      // messages/{mid}/chunks (≤ 5 pieces ≈ 2 MB); the message itself only carries
+      // metadata and a tiny preview, so loading a channel stays cheap.
+      function validFile(f) {
+        return f is map
+          && f.keys().hasOnly(['name', 'mime', 'size', 'chunks', 'kind', 'thumb'])
+          && f.keys().hasAll(['name', 'mime', 'size', 'chunks', 'kind'])
+          && f.name is string && f.name.size() > 0 && f.name.size() <= 120
+          && f.mime is string && f.mime.size() <= 100
+          && f.size is int && f.size > 0 && f.size <= 2200000
+          && f.chunks is int && f.chunks >= 1 && f.chunks <= 5
+          && f.kind in ['image', 'file']
+          && (!('thumb' in f) || (f.thumb is string && f.thumb.size() <= 40000));
+      }
+
       match /messages/{mid} {
         allow read: if isActive();
         allow create: if isActive()
-          && request.resource.data.keys().hasOnly(['text', 'uid', 'senderName', 'senderRole', 'createdAt'])
+          && request.resource.data.keys().hasOnly(['text', 'uid', 'senderName', 'senderRole', 'createdAt', 'file'])
+          && request.resource.data.keys().hasAll(['text', 'uid', 'senderName', 'senderRole', 'createdAt'])
           && request.resource.data.uid == request.auth.uid
           && request.resource.data.senderName == userDoc().name
           && request.resource.data.senderRole == userDoc().role
           && request.resource.data.text is string
-          && request.resource.data.text.size() > 0
           && request.resource.data.text.size() <= 2000
+          && (request.resource.data.text.size() > 0 || 'file' in request.resource.data.keys())
+          && (!('file' in request.resource.data.keys()) || validFile(request.resource.data.file))
           && request.resource.data.createdAt == request.time
           && channelData(cid).archived != true
           && (channelData(cid).adminOnly != true || isAdmin());
         allow update: if false;
         allow delete: if isAdmin();
+
+        match /chunks/{n} {
+          allow read: if isActive();
+          // Only as part of sending the message that declares them.
+          allow create: if isActive()
+            && request.resource.data.keys().hasOnly(['i', 'data'])
+            && request.resource.data.i is int
+            && string(request.resource.data.i) == n
+            && request.resource.data.data is string
+            && request.resource.data.data.size() > 0
+            && request.resource.data.data.size() <= 700000
+            && existsAfter(/databases/$(database)/documents/channels/$(cid)/messages/$(mid))
+            && getAfter(/databases/$(database)/documents/channels/$(cid)/messages/$(mid)).data.uid == request.auth.uid
+            && getAfter(/databases/$(database)/documents/channels/$(cid)/messages/$(mid)).data.file.chunks > request.resource.data.i;
+          allow update: if false;
+          allow delete: if isAdmin();
+        }
       }
+    }
+
+    // ---------- team (public flags) ----------
+    // The website reads this without logging in, so it holds nothing private:
+    // just the display name and up to two country codes. No emails, no roles.
+    function validCountries(c) {
+      return c is list && c.size() <= 2
+        && c.hasOnly(['al', 'ba', 'bg', 'gr', 'hr', 'me', 'mk', 'ro', 'rs', 'si', 'xk']);
+    }
+
+    match /team/{uid} {
+      allow get, list: if true;
+      allow create, update: if isActive()
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['name', 'countries', 'updatedAt'])
+        && request.resource.data.name == userDoc().name
+        && validCountries(request.resource.data.countries)
+        && request.resource.data.updatedAt == request.time;
+      // Admins can fix a name after renaming someone in the Members tab.
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 80;
+      allow delete: if isActive() && (request.auth.uid == uid || isAdmin());
     }
 
     // Everything else is closed.

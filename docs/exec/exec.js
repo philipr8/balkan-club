@@ -2,6 +2,9 @@
    ABSQU Exec area — Firebase Auth + Firestore, no build step.
 
    Roles live in Firestore:  users/{uid} = { name, email, role: 'admin'|'exec', active }
+   Flags (public):           team/{uid}  = { name, countries: ['rs','mk'], updatedAt }
+   Attachments:              messages/{mid}.file = { name, mime, size, chunks, kind, thumb? }
+                             messages/{mid}/chunks/{i} = { i, data: <base64 piece> }   (no paid Storage)
    Every permission shown in this UI is ALSO enforced by firestore.rules — the UI
    only hides what the server would reject anyway.
 
@@ -15,13 +18,35 @@ const HINT_KEY = 'absqu.execHint';
 const MAX_LEN = 2000;
 const GROUP_MS = 5 * 60 * 1000;
 
+// Channels every admin sign-in makes sure exist (missing ones are created; nothing is ever overwritten).
 const DEFAULT_CHANNELS = [
   { id: 'announcements', description: 'Official updates from the co-presidents. Read-only for execs.', adminOnly: true, order: 0 },
   { id: 'general', description: 'Everything and anything ABSQU.', adminOnly: false, order: 1 },
   { id: 'events', description: 'Planning potlucks, watchparties and bar nights.', adminOnly: false, order: 2 },
   { id: 'marketing', description: 'Posts, posters, Instagram, campaigns.', adminOnly: false, order: 3 },
   { id: 'finance', description: 'Budgets, receipts, sponsorships.', adminOnly: false, order: 4 },
+  { id: 'student-reps', description: 'Student representatives: feedback, concerns, club-wide questions.', adminOnly: false, order: 5 },
+  { id: 'communications', description: 'Communications & outreach: emails, partners, other clubs.', adminOnly: false, order: 6 },
+  { id: 'resources', description: 'Flyers, templates, forms and documents worth keeping. (For big photo sets, share a Drive/Dropbox link.)', adminOnly: false, order: 7 },
 ];
+// How the sidebar groups channels (display only — rules don't care).
+const CHANNEL_GROUPS = [
+  { label: 'Club', ids: ['announcements', 'general', 'resources'] },
+  { label: 'Teams', ids: ['events', 'marketing', 'finance', 'student-reps', 'communications'] },
+];
+
+// Countries offered for the website flag (same 11 as the public site). Codes are validated by firestore.rules too.
+const COUNTRIES = [
+  ['al', 'Albania'], ['ba', 'Bosnia & Herzegovina'], ['bg', 'Bulgaria'], ['hr', 'Croatia'], ['gr', 'Greece'], ['xk', 'Kosovo'],
+  ['me', 'Montenegro'], ['mk', 'North Macedonia'], ['ro', 'Romania'], ['rs', 'Serbia'], ['si', 'Slovenia'],
+].map(([code, name]) => ({ code, name }));
+const COUNTRY_NAME = Object.fromEntries(COUNTRIES.map(c => [c.code, c.name]));
+
+// Attachments: stored in Firestore as base64 pieces (Firebase Storage would need the paid plan).
+const MAX_FILE = 2_000_000;          // bytes, after photo shrinking
+const CHUNK_CHARS = 600_000;         // base64 chars per chunk doc (rules allow 700k, Firestore doc limit ~1 MiB)
+const MAX_CHUNKS = 5;
+const FILE_EXT = /\.(pdf|docx?|xlsx?|pptx?|txt|csv|rtf|md|odt|ods|odp|key|pages|numbers|zip|gif|jpe?g|png|webp|heic|heif)$/i;
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
@@ -75,6 +100,10 @@ function linkify(text) {
   frag.append(text.slice(last));
   return frag;
 }
+const flagImg = code => el('img', { class: 'flag', src: `https://flagcdn.com/w40/${code}.png`, srcset: `https://flagcdn.com/w80/${code}.png 2x`, alt: COUNTRY_NAME[code] || '', title: COUNTRY_NAME[code] || '', width: 20, height: 15, loading: 'lazy', decoding: 'async' });
+const flagsFor = uid => (S.team.get(uid)?.countries || []).filter(c => COUNTRY_NAME[c]);
+const flagsSpan = uid => { const f = flagsFor(uid); return f.length ? el('span', { class: 'flags' }, f.map(flagImg)) : null; };
+const fmtSize = n => n < 1000 ? `${n} B` : n < 1e6 ? `${Math.round(n / 1000)} KB` : `${(n / 1e6).toFixed(1)} MB`;   // decimal, like Finder/Explorer
 const store = {
   get() { try { return JSON.parse(localStorage.getItem(HINT_KEY) || 'null'); } catch { return null; } },
   set(v) { try { localStorage.setItem(HINT_KEY, JSON.stringify(v)); } catch { /* storage blocked */ } },
@@ -86,6 +115,7 @@ const S = {
   user: null, profile: null, chatOn: false,
   channels: [], channelId: null, msgs: [], firstRender: true, msgsLoaded: false,
   members: [], pendings: [], seeded: false, pendingSent: null, loginNotice: '',
+  team: new Map(), teamReady: false, flagSkipped: false, att: null, sending: false,
   unsubs: {},
 };
 let auth, db, F; // F = firebase function namespace
@@ -131,7 +161,8 @@ function teardown() {
   Object.keys(S.unsubs).forEach(stop);
   S.chatOn = false; S.profile = null; S.channels = []; S.channelId = null; S.msgs = []; S.msgsLoaded = false;
   S.members = []; S.pendings = []; S.seeded = false; S.firstRender = true;
-  if ($('#adminDlg').open) $('#adminDlg').close();
+  S.team = new Map(); S.teamReady = false; S.flagSkipped = false; clearAttachment(true);
+  for (const d of ['adminDlg', 'flagDlg', 'viewDlg']) if ($('#' + d).open) $('#' + d).close();
 }
 
 function onAuth(user) {
@@ -201,6 +232,7 @@ function renderWho() {
   if (!p) return;
   const a = $('#whoAv'); a.textContent = initials(p.name); a.className = `avatar ${colorOf(p.uid)}`;
   $('#whoName').textContent = p.name;
+  $('#whoFlags').replaceChildren(...flagsFor(p.uid).map(flagImg));
   const r = $('#whoRole'); r.textContent = p.role; r.className = 'rolebadge' + (p.role === 'admin' ? ' is-admin' : '');
 }
 
@@ -250,12 +282,14 @@ function startChat() {
   S.chatOn = true;
   show('chat');
   $('#adminBox').hidden = !isAdmin();
+  watchTeam();
   watchChannels();
   if (isAdmin()) watchAdmin();
 }
 function teardownChat() {
-  ['channels', 'messages', 'members', 'pending'].forEach(stop);
+  ['channels', 'messages', 'members', 'pending', 'team'].forEach(stop);
   S.chatOn = false; S.channels = []; S.channelId = null; S.msgs = []; S.members = []; S.pendings = []; S.msgsLoaded = false;
+  S.team = new Map(); S.teamReady = false;
   if ($('#adminDlg').open) $('#adminDlg').close();
 }
 function onRoleChanged() {
@@ -280,36 +314,45 @@ function watchChannels() {
   S.unsubs.channels = F.onSnapshot(F.collection(db, 'channels'), snap => {
     S.channels = snap.docs.map(d => ({ id: d.id, ...d.data() }))
       .sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || a.id.localeCompare(b.id));
-    if (isAdmin() && snap.empty && !snap.metadata.fromCache && !S.seeded) seedChannels();
+    if (isAdmin() && !snap.metadata.fromCache && !S.seeded) {
+      const have = new Set(snap.docs.map(d => d.id)), missing = DEFAULT_CHANNELS.filter(c => !have.has(c.id));
+      if (missing.length) seedChannels(missing);
+    }
     renderChannels(); ensureActive();
     if ($('#adminDlg').open) renderChannelsPane();
   }, err => listenerError('channels', err, "Couldn't load channels."));
 }
 
-async function seedChannels() {
+async function seedChannels(list) {
   S.seeded = true;
   try {
     const batch = F.writeBatch(db);
-    for (const c of DEFAULT_CHANNELS) {
+    for (const c of list) {
       batch.set(F.doc(db, 'channels', c.id), {
         name: c.id, description: c.description, adminOnly: c.adminOnly, archived: false, order: c.order,
         createdAt: F.serverTimestamp(), createdBy: S.profile.uid,
       });
     }
     await batch.commit();
-    toast('Set up the default channels.');
+    toast(list.length === DEFAULT_CHANNELS.length ? 'Set up the default channels.' : `Added ${list.length} new channel${list.length === 1 ? '' : 's'}.`);
   } catch (err) { console.error(err); S.seeded = false; toast("Couldn't create the default channels.", 'error'); }
 }
 
 function renderChannels() {
   const list = $('#chList'); list.replaceChildren();
-  const active = visibleChannels().filter(c => !c.archived), archived = visibleChannels().filter(c => c.archived);
+  const live = visibleChannels().filter(c => !c.archived), archived = visibleChannels().filter(c => c.archived);
   const item = c => el('button', {
     class: 'ch' + (c.archived ? ' is-archived' : ''), type: 'button', 'aria-current': c.id === S.channelId ? 'true' : null,
     onclick: () => selectChannel(c.id),
   }, icon('i-hash'), el('span', { class: 'ch__name', text: c.name || c.id }), c.adminOnly ? icon('i-lock', 'icon ch__lock') : null);
-  active.forEach(c => list.append(item(c)));
-  if (!active.length && !archived.length) list.append(el('p', { class: 'sec-note', style: 'padding:12px', text: 'No channels yet. An admin needs to sign in once to set them up.' }));
+  const used = new Set();
+  for (const g of CHANNEL_GROUPS) {
+    const here = live.filter(c => g.ids.includes(c.id)); here.forEach(c => used.add(c.id));
+    if (here.length) { list.append(el('h3', { text: g.label })); here.forEach(c => list.append(item(c))); }
+  }
+  const more = live.filter(c => !used.has(c.id));
+  if (more.length) { list.append(el('h3', { text: used.size ? 'More' : 'Channels' })); more.forEach(c => list.append(item(c))); }
+  if (!live.length && !archived.length) list.append(el('p', { class: 'sec-note', style: 'padding:12px', text: 'No channels yet. An admin needs to sign in once to set them up.' }));
   if (archived.length) { list.append(el('h3', { text: 'Archived' })); archived.forEach(c => list.append(item(c))); }
 }
 
@@ -376,8 +419,9 @@ function renderMessages() {
     const row = el('article', { class: 'msg' + (cont ? ' is-cont' : '') + (m.pending ? ' is-pending' : '') },
       avatar(m.senderName, m.uid),
       el('div', {},
-        cont ? null : el('div', { class: 'msg__meta' }, el('b', { text: m.senderName || 'Unknown' }), m.senderRole === 'admin' ? roleBadge('admin') : null, el('time', { datetime: when.toISOString(), text: timeFmt.format(when) })),
-        el('div', { class: 'msg__text' }, linkify(m.text || ''))),
+        cont ? null : el('div', { class: 'msg__meta' }, el('b', { text: m.senderName || 'Unknown' }), flagsSpan(m.uid), m.senderRole === 'admin' ? roleBadge('admin') : null, el('time', { datetime: when.toISOString(), text: timeFmt.format(when) })),
+        m.text ? el('div', { class: 'msg__text' }, linkify(m.text)) : null,
+        m.file ? attachmentEl(m) : null),
       isAdmin() && !m.pending ? el('button', { class: 'msg__del', type: 'button', 'aria-label': 'Delete message', title: 'Delete message (admin)', onclick: () => deleteMessage(m) }, icon('i-trash')) : null);
     frag.append(row);
     prev = { m, when };
@@ -388,14 +432,174 @@ function renderMessages() {
 
 async function deleteMessage(m) {
   if (!confirm(`Delete this message from ${m.senderName}? This can't be undone.`)) return;
-  try { await F.deleteDoc(F.doc(db, 'channels', S.channelId, 'messages', m.id)); }
-  catch (err) { console.error(err); toast("Couldn't delete that message.", 'error'); }
+  try {
+    const b = F.writeBatch(db);
+    for (let i = 0; m.file && i < (m.file.chunks || 0); i++) b.delete(F.doc(db, 'channels', S.channelId, 'messages', m.id, 'chunks', String(i)));
+    b.delete(F.doc(db, 'channels', S.channelId, 'messages', m.id));
+    await b.commit();
+  } catch (err) { console.error(err); toast("Couldn't delete that message.", 'error'); }
 }
 
-/* --------------------------------------------------------------- composer */
+/* ------------------------------------------------------------ attachments */
 const input = $('#msgInput');
+const blobCache = new Map(); // messageId -> Blob (so reopening a file doesn't re-read it)
+
+function readAsDataURL(blob) {
+  return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(r.error); r.readAsDataURL(blob); });
+}
+const dataUrlToBase64 = u => u.slice(u.indexOf(',') + 1);
+function loadImage(file) {
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => { URL.revokeObjectURL(url); res(img); };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('decode')); };
+    img.src = url;
+  });
+}
+function drawJpeg(img, maxSide, quality) {
+  const k = Math.min(1, maxSide / Math.max(img.naturalWidth, img.naturalHeight));
+  const w = Math.max(1, Math.round(img.naturalWidth * k)), h = Math.max(1, Math.round(img.naturalHeight * k));
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, w, h); g.drawImage(img, 0, 0, w, h);
+  return new Promise(res => c.toBlob(res, 'image/jpeg', quality));
+}
+// Shrink a photo until it fits comfortably (re-encoding also strips location/EXIF data).
+async function prepareImage(file) {
+  const img = await loadImage(file);
+  let blob = null;
+  for (const [side, q] of [[1600, 0.85], [1600, 0.72], [1280, 0.72], [1024, 0.7], [800, 0.65]]) {
+    blob = await drawJpeg(img, side, q);
+    if (blob && blob.size <= 1_400_000) break;
+  }
+  if (!blob || blob.size > MAX_FILE) throw new Error('toobig');
+  let thumb = '';
+  for (const [side, q] of [[360, 0.7], [280, 0.6], [200, 0.5]]) {
+    thumb = await readAsDataURL(await drawJpeg(img, side, q));
+    if (thumb.length <= 30_000) break;
+  }
+  const name = (file.name || 'photo').replace(/\.[^.]+$/, '') + '.jpg';
+  return { kind: 'image', blob, name, mime: 'image/jpeg', thumb };
+}
+
+async function prepareAttachment(file) {
+  if (!file) return null;
+  const name = (file.name || 'file').split(/[\\/]/).pop().slice(0, 120) || 'file';
+  const isImg = /^image\//.test(file.type) && !/gif$/.test(file.type);
+  if (!isImg && !FILE_EXT.test(name)) throw new Error('type');
+  if (isImg) {
+    try { const a = await prepareImage(file); return a; }
+    catch (e) { if (e.message === 'toobig') throw e; throw new Error('decode'); }
+  }
+  if (file.size > MAX_FILE) throw new Error('toobig');
+  if (file.size === 0) throw new Error('empty');
+  return { kind: 'file', blob: file, name, mime: (file.type || 'application/octet-stream').slice(0, 100) };
+}
+
+async function toChunks(blob) {
+  const bytes = new Uint8Array(await blob.arrayBuffer());
+  let bin = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  const b64 = btoa(bin), out = [];
+  for (let i = 0; i < b64.length; i += CHUNK_CHARS) out.push(b64.slice(i, i + CHUNK_CHARS));
+  return out;
+}
+
+const attErrors = {
+  type: "That file type isn't supported. Try PDF, Word/Excel/PowerPoint, text, zip or a photo.",
+  toobig: 'That file is too big — the limit is 2 MB. Share larger files with a Drive/Dropbox link instead.',
+  decode: "Couldn't read that photo. Try a JPEG or PNG.",
+  empty: 'That file is empty.',
+};
+
+function renderAttachment() {
+  const chip = $('#attChip'), a = S.att;
+  chip.hidden = !a; chip.replaceChildren();
+  if (!a) return;
+  const lead = a.thumb ? el('img', { class: 'chip__thumb', src: a.thumb, alt: '' }) : el('span', { class: 'chip__ico' }, icon('i-file'));
+  chip.append(lead, el('span', { class: 'chip__txt' }, el('b', { text: a.name }), el('span', { text: a.busy ? 'Preparing…' : fmtSize(a.blob.size) })),
+    el('button', { class: 'iconbtn', type: 'button', 'aria-label': 'Remove attachment', onclick: () => clearAttachment(), disabled: S.sending }, icon('i-close')));
+}
+function clearAttachment(silent) { S.att = null; $('#fileInput').value = ''; if (!silent) renderAttachment(); else $('#attChip').hidden = true; }
+
+async function attachFile(file) {
+  if (!file || S.sending || !canPost(curChannel())) return;
+  S.att = { name: file.name || 'file', blob: file, busy: true }; renderAttachment();
+  try { S.att = await prepareAttachment(file); }
+  catch (e) { S.att = null; toast(attErrors[e.message] || "Couldn't attach that file.", 'error'); }
+  renderAttachment(); updateSend();
+}
+$('#attachBtn').addEventListener('click', () => $('#fileInput').click());
+$('#fileInput').addEventListener('change', e => { const f = e.target.files[0]; e.target.value = ''; attachFile(f); });
+input.addEventListener('paste', e => { const f = [...(e.clipboardData?.files || [])][0]; if (f) { e.preventDefault(); attachFile(f); } });
+
+// Drag & drop anywhere on the conversation
+{
+  const room = $('.room'), dz = $('#dropzone'); let depth = 0;
+  const has = e => [...(e.dataTransfer?.types || [])].includes('Files');
+  room.addEventListener('dragenter', e => { if (has(e) && canPost(curChannel())) { depth++; dz.hidden = false; e.preventDefault(); } });
+  room.addEventListener('dragover', e => { if (has(e)) e.preventDefault(); });
+  room.addEventListener('dragleave', () => { depth = Math.max(0, depth - 1); if (!depth) dz.hidden = true; });
+  room.addEventListener('drop', e => { if (!has(e)) return; e.preventDefault(); depth = 0; dz.hidden = true; attachFile(e.dataTransfer.files[0]); });
+}
+
+function attachmentEl(m) {
+  const f = m.file, uploading = m.pending;
+  const open = () => openAttachment(m);
+  if (f.kind === 'image' && f.thumb) {
+    return el('button', { class: 'att att--img', type: 'button', onclick: open, 'aria-label': `View photo ${f.name}`, disabled: uploading },
+      el('img', { src: f.thumb, alt: f.name }), el('span', { class: 'att__cap', text: f.name }));
+  }
+  return el('button', { class: 'att att--file', type: 'button', onclick: open, 'aria-label': `Download ${f.name}`, disabled: uploading },
+    el('span', { class: 'att__ico' }, icon('i-file')),
+    el('span', { class: 'att__meta' }, el('b', { text: f.name }), el('span', { text: uploading ? 'Uploading…' : `${fmtSize(f.size)} · tap to download` })),
+    icon('i-down', 'icon att__dl'));
+}
+
+async function fetchBlob(m) {
+  if (blobCache.has(m.id)) return blobCache.get(m.id);
+  const q = F.query(F.collection(db, 'channels', S.channelId, 'messages', m.id, 'chunks'), F.orderBy('i'));
+  const snap = await F.getDocs(q);
+  const parts = snap.docs.map(d => d.data().data);
+  if (parts.length !== m.file.chunks) throw new Error('incomplete');
+  const bin = atob(parts.join('')), bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  // Images are re-encoded JPEGs we made ourselves. Everything else is served as an opaque download,
+  // so a pasted .html/.svg can never run inside this site.
+  const blob = new Blob([bytes], { type: m.file.kind === 'image' ? 'image/jpeg' : 'application/octet-stream' });
+  if (blobCache.size > 12) blobCache.delete(blobCache.keys().next().value);
+  blobCache.set(m.id, blob);
+  return blob;
+}
+function saveBlob(blob, name) {
+  const url = URL.createObjectURL(blob), a = el('a', { href: url, download: name });
+  document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+let viewing = null; // { blob, name, url }
+async function openAttachment(m) {
+  const btn = document.activeElement;
+  btn?.classList?.add('is-loading');
+  try {
+    const blob = await fetchBlob(m);
+    if (m.file.kind === 'image') {
+      if (viewing?.url) URL.revokeObjectURL(viewing.url);
+      viewing = { blob, name: m.file.name, url: URL.createObjectURL(blob) };
+      $('#viewImg').src = viewing.url; $('#viewImg').alt = m.file.name; $('#viewName').textContent = m.file.name;
+      $('#viewDlg').showModal();
+    } else { saveBlob(blob, m.file.name); }
+  } catch (err) {
+    console.error(err);
+    toast(err.message === 'incomplete' ? 'That file is still uploading — try again in a moment.' : "Couldn't load that file.", 'error');
+  } finally { btn?.classList?.remove('is-loading'); }
+}
+$('#viewClose').addEventListener('click', () => $('#viewDlg').close());
+$('#viewDlg').addEventListener('click', e => { if (e.target === $('#viewDlg') || e.target.classList.contains('viewer__stage')) $('#viewDlg').close(); });
+$('#viewDl').addEventListener('click', () => viewing && saveBlob(viewing.blob, viewing.name));
+$('#viewDlg').addEventListener('close', () => { if (viewing?.url) URL.revokeObjectURL(viewing.url); viewing = null; $('#viewImg').removeAttribute('src'); });
+
+/* --------------------------------------------------------------- composer */
 function autosize() { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 160) + 'px'; }
-input.addEventListener('input', autosize);
+function updateSend() { $('#sendBtn').disabled = S.sending || (S.att?.busy) || (!input.value.trim() && !S.att); }
+input.addEventListener('input', () => { autosize(); updateSend(); });
 input.addEventListener('keydown', e => {
   if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('#composer').requestSubmit(); }
 });
@@ -403,30 +607,96 @@ input.addEventListener('keydown', e => {
 function updateComposer() {
   const ch = curChannel(), ok = canPost(ch);
   $('#composerRow').hidden = !ok;
+  if (!ok) clearAttachment();
   const lock = $('#composerLock'); lock.hidden = ok;
   if (!ok) {
     $('#composerLockTxt').textContent = !ch ? 'Pick a channel to start chatting.'
       : ch.archived ? 'This channel is archived — it’s read-only.'
       : `Only admins can post in #${ch.name || ch.id}. Execs can read it here.`;
   } else input.placeholder = `Message #${ch.name || ch.id}`;
+  updateSend();
 }
 
 $('#composer').addEventListener('submit', async e => {
   e.preventDefault();
-  const ch = curChannel(), text = input.value.trim();
-  if (!text || !canPost(ch) || !S.profile) return;
+  const ch = curChannel(), text = input.value.trim(), att = S.att;
+  if ((!text && !att) || att?.busy || S.sending || !canPost(ch) || !S.profile) return;
   if (text.length > MAX_LEN) { toast(`Messages are limited to ${MAX_LEN} characters.`, 'error'); return; }
-  input.value = ''; autosize();
+  const data = { text, uid: S.profile.uid, senderName: S.profile.name, senderRole: S.profile.role, createdAt: F.serverTimestamp() };
+  S.sending = true; $('#sendBtn').disabled = true;
   try {
-    await F.addDoc(F.collection(db, 'channels', ch.id, 'messages'), {
-      text, uid: S.profile.uid, senderName: S.profile.name, senderRole: S.profile.role, createdAt: F.serverTimestamp(),
-    });
+    if (att) {
+      const parts = await toChunks(att.blob);
+      if (parts.length > MAX_CHUNKS) throw Object.assign(new Error('toobig'), { local: true });
+      data.file = { name: att.name, mime: att.mime, size: att.blob.size, chunks: parts.length, kind: att.kind };
+      if (att.thumb) data.file.thumb = att.thumb;
+      const ref = F.doc(F.collection(db, 'channels', ch.id, 'messages'));
+      const b = F.writeBatch(db);
+      b.set(ref, data);
+      parts.forEach((d, i) => b.set(F.doc(db, 'channels', ch.id, 'messages', ref.id, 'chunks', String(i)), { i, data: d }));
+      input.value = ''; autosize(); clearAttachment();
+      await b.commit();
+    } else {
+      input.value = ''; autosize();
+      await F.addDoc(F.collection(db, 'channels', ch.id, 'messages'), data);
+    }
   } catch (err) {
     console.error(err);
     if (!input.value) { input.value = text; autosize(); }
-    toast(err?.code === 'permission-denied' ? "You don't have permission to post here." : "Message didn't send. Try again.", 'error');
-  }
+    if (att && !S.att) { S.att = att; renderAttachment(); }
+    toast(err.local ? attErrors.toobig : err?.code === 'permission-denied' ? "You don't have permission to post here." : "Message didn't send. Try again.", 'error');
+  } finally { S.sending = false; updateSend(); }
 });
+
+/* ------------------------------------------------------------- flags */
+function watchTeam() {
+  stop('team');
+  S.unsubs.team = F.onSnapshot(F.collection(db, 'team'), snap => {
+    S.team = new Map(snap.docs.map(d => [d.id, d.data()]));
+    renderWho();
+    if (S.msgsLoaded) renderMessages();
+    if (dlg.open) renderAdmin('members');
+    if (!snap.metadata.fromCache) {
+      S.teamReady = true;
+      if (S.profile && !S.team.has(S.profile.uid) && !S.flagSkipped && !$('#flagDlg').open) openFlagDialog(true);
+    }
+  }, err => listenerError('team', err));
+}
+
+const flagDlg = $('#flagDlg');
+let flagPicked = [];
+function renderFlagPick() {
+  const box = $('#flagPick'); box.replaceChildren();
+  for (const c of COUNTRIES) {
+    const on = flagPicked.includes(c.code);
+    box.append(el('button', { class: 'flagopt', type: 'button', 'aria-pressed': String(on), onclick: () => {
+      flagPicked = on ? flagPicked.filter(x => x !== c.code) : flagPicked.length >= 2 ? [...flagPicked.slice(1), c.code] : [...flagPicked, c.code];
+      renderFlagPick();
+    } }, flagImg(c.code), el('span', { text: c.name })));
+  }
+  $('#flagSave').disabled = !flagPicked.length;
+  $('#flagNote').textContent = flagPicked.length === 2 ? 'Two flags selected. Tap another to swap the oldest.' : flagPicked.length ? 'Tap a second country if you’re mixed.' : 'Pick one or two.';
+}
+function openFlagDialog(first) {
+  flagPicked = flagsFor(S.profile.uid).slice(0, 2);
+  $('#flagLater').textContent = first ? 'Ask me later' : 'Cancel';
+  renderFlagPick();
+  if (!flagDlg.open) flagDlg.showModal();
+}
+async function saveFlags(countries) {
+  try {
+    await F.setDoc(F.doc(db, 'team', S.profile.uid), { name: S.profile.name, countries, updatedAt: F.serverTimestamp() });
+    flagDlg.close();
+    toast(countries.length ? 'Flag saved — it’ll show on the website team page.' : 'Okay — no flag will be shown.');
+  } catch (err) { console.error(err); toast("Couldn't save that. Try again.", 'error'); }
+}
+$('#flagForm').addEventListener('submit', e => { e.preventDefault(); if (flagPicked.length) saveFlags(flagPicked); });
+$('#flagNone').addEventListener('click', () => saveFlags([]));
+$('#flagLater').addEventListener('click', () => { S.flagSkipped = true; flagDlg.close(); });
+$('#flagClose').addEventListener('click', () => { S.flagSkipped = true; flagDlg.close(); });
+flagDlg.addEventListener('click', e => { if (e.target === flagDlg) { S.flagSkipped = true; flagDlg.close(); } });
+flagDlg.addEventListener('cancel', () => { S.flagSkipped = true; });
+$('#flagBtn').addEventListener('click', () => S.profile && openFlagDialog(false));
 
 /* -------------------------------------------------------- mobile drawer */
 const openDrawer = () => { $('#side').classList.add('is-open'); $('#scrim').hidden = false; };
@@ -493,7 +763,12 @@ function renderMembersPane() {
   for (const m of S.members) {
     const self = m.uid === S.profile.uid, off = m.active !== true;
     const name = el('input', { type: 'text', value: m.name || '', maxlength: 80, 'aria-label': `Name for ${m.email}`,
-      onchange: ev => { const v = ev.target.value.trim(); if (!v) { ev.target.value = m.name; return; } if (v !== m.name) guarded(() => F.updateDoc(F.doc(db, 'users', m.uid), { name: v }), 'Name updated.'); } });
+      onchange: ev => { const v = ev.target.value.trim(); if (!v) { ev.target.value = m.name; return; } if (v !== m.name) guarded(async () => {
+        const b = F.writeBatch(db);
+        b.update(F.doc(db, 'users', m.uid), { name: v });
+        if (S.team.has(m.uid)) b.update(F.doc(db, 'team', m.uid), { name: v }); // keep the website flag matched to the new name
+        await b.commit();
+      }, 'Name updated.'); } });
     const roleSel = el('select', { 'aria-label': `Role for ${m.name}`, disabled: self,
       onchange: ev => {
         const v = ev.target.value;
@@ -508,7 +783,7 @@ function renderMembersPane() {
       } });
     pane.append(el('div', { class: 'row' + (off ? ' is-off' : '') },
       avatar(m.name, m.uid, 40),
-      el('div', { class: 'row__main' }, name, el('span', { class: 'row__sub', text: m.email + (self ? ' · you' : '') })),
+      el('div', { class: 'row__main' }, name, el('span', { class: 'row__sub' }, flagsSpan(m.uid), m.email + (self ? ' · you' : ''))),
       el('div', { class: 'row__ctl' }, roleSel, el('label', { class: 'switch' }, act, off ? 'Inactive' : 'Active'))));
   }
 }

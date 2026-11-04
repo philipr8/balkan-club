@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Exec area — ABSQU</title>
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="theme-color" content="#111111" />
+  <meta name="theme-color" content="#0d3a63" />
   <link rel="icon" href="../images/logo.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -23,6 +23,10 @@
   <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5z"/></symbol>
   <symbol id="i-out" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></symbol>
+  <symbol id="i-clip" viewBox="0 0 24 24"><path d="M21 11.5l-8.6 8.6a5.5 5.5 0 0 1-7.8-7.8l9-9a3.7 3.7 0 0 1 5.2 5.2l-9 9a1.8 1.8 0 0 1-2.6-2.6l8.3-8.3"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5M9 13h6M9 17h6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></symbol>
   <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
 </svg>
 
@@ -35,7 +39,8 @@
     <a class="xlink" href="../">← Public site</a>
     <div class="who" id="who" hidden>
       <span class="avatar" id="whoAv" aria-hidden="true"></span>
-      <span class="who__txt"><b id="whoName"></b><span class="rolebadge" id="whoRole"></span></span>
+      <span class="who__txt"><b id="whoName"></b><span class="flags" id="whoFlags"></span><span class="rolebadge" id="whoRole"></span></span>
+      <button class="iconbtn" id="flagBtn" type="button" aria-label="Set my flag" title="My flag (shown on the website)"><svg class="icon"><use href="#i-globe"/></svg></button>
       <button class="btn btn--ghost btn--sm" id="logoutBtn" type="button"><svg class="icon"><use href="#i-out"/></svg><span>Log out</span></button>
     </div>
   </div>
@@ -119,12 +124,16 @@
       <div class="msgs" id="msgs" role="log" aria-live="polite" aria-label="Messages" tabindex="0"></div>
       <form class="composer" id="composer" autocomplete="off">
         <div class="composer__lock" id="composerLock" hidden><svg class="icon"><use href="#i-lock"/></svg><span id="composerLockTxt"></span></div>
+        <div class="chip" id="attChip" hidden></div>
         <div class="composer__row" id="composerRow">
+          <input type="file" id="fileInput" hidden accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.rtf,.md,.odt,.ods,.odp,.key,.pages,.numbers,.zip,.gif" />
+          <button class="iconbtn attachbtn" id="attachBtn" type="button" aria-label="Attach a photo or file" title="Attach a photo or file (up to 2 MB)"><svg class="icon"><use href="#i-clip"/></svg></button>
           <label class="sr-only" for="msgInput">Message</label>
           <textarea id="msgInput" rows="1" maxlength="2000" placeholder="Message #channel" enterkeyhint="send"></textarea>
           <button class="btn sendbtn" id="sendBtn" type="submit" aria-label="Send message"><svg class="icon"><use href="#i-send"/></svg></button>
         </div>
       </form>
+      <div class="dropzone" id="dropzone" hidden><svg class="icon"><use href="#i-clip"/></svg><b>Drop to attach</b><span>Photos are shrunk automatically. Files up to 2&nbsp;MB.</span></div>
     </section>
   </section>
 </main>
@@ -146,6 +155,40 @@
       <div id="pane-pending" role="tabpanel" aria-labelledby="tab-pending" hidden></div>
       <div id="pane-channels" role="tabpanel" aria-labelledby="tab-channels" hidden></div>
     </div>
+  </div>
+</dialog>
+
+<!-- Where is your family from? (flag on the public site) -->
+<dialog id="flagDlg" aria-labelledby="flagTitle">
+  <form class="dlg dlg--small" id="flagForm" method="dialog">
+    <header class="dlg__head">
+      <h2 id="flagTitle">Where are you from? 🌍</h2>
+      <button class="iconbtn" id="flagClose" type="button" aria-label="Close"><svg class="icon"><use href="#i-close"/></svg></button>
+    </header>
+    <div class="dlg__body">
+      <p class="muted">Pick your country (or two, if you’re mixed). A little flag will show next to your name on the ABSQU website team page and in this chat.</p>
+      <div class="flagpick" id="flagPick" role="group" aria-label="Countries"></div>
+      <p class="sec-note" id="flagNote"></p>
+      <div class="dlg__actions">
+        <button class="btn" id="flagSave" type="submit" disabled>Save</button>
+        <button class="btn btn--ghost" id="flagNone" type="button">No flag, thanks</button>
+        <button class="textbtn" id="flagLater" type="button">Ask me later</button>
+      </div>
+    </div>
+  </form>
+</dialog>
+
+<!-- Attachment viewer -->
+<dialog id="viewDlg" aria-label="Attachment">
+  <div class="viewer">
+    <div class="viewer__bar">
+      <b id="viewName"></b>
+      <span class="viewer__btns">
+        <button class="btn btn--sm" id="viewDl" type="button"><svg class="icon"><use href="#i-down"/></svg>Download</button>
+        <button class="iconbtn" id="viewClose" type="button" aria-label="Close"><svg class="icon"><use href="#i-close"/></svg></button>
+      </span>
+    </div>
+    <div class="viewer__stage"><img id="viewImg" alt="" /></div>
   </div>
 </dialog>
 

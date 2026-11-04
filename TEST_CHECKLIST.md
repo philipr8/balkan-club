@@ -16,8 +16,12 @@ Test on the live URL **https://<project-id>.web.app/** and, if you've changed co
 - [ ] Links work: `@abs_qu` → https://www.instagram.com/abs_qu/ · `QueensABSQU@gmail.com` opens a mail draft · `linktr.ee/absqu` opens Linktree.
 - [ ] Old hash links still land correctly: `…web.app/#about`, `#countries`, `#events`, `#team`, `#gallery`, `#instagram`, `#contact`.
 - [ ] Phone (or browser dev tools at 390 px wide): no sideways scrolling, menu button opens a full-screen menu, text is readable.
-- [ ] Dev tools → **Network** tab, reload: **no requests** to `gstatic.com/firebasejs`, `firestore.googleapis.com` or `identitytoolkit` on the public page (Firebase only loads on `/exec/`).
+- [ ] Dev tools → **Network** tab, reload (don't scroll): **no requests** to `gstatic.com/firebasejs`, `firestore.googleapis.com` or `identitytoolkit`. Scroll to Team: exactly **one** read-only request to `firestore.googleapis.com/…/documents/team` appears (country flags); the Firebase SDK (`gstatic.com/firebasejs`) is never loaded on the public page.
 - [ ] The nav shows an **Exec Login** button.
+
+- [ ] **Colours:** the hero, nav and footer are deep navy (not black); sections alternate cream → blue (What we do) → cream (Events) → white (Team) → cream (Gallery) → red (Contact). Text is readable everywhere.
+- [ ] **Instagram** (after `INSTAGRAM_SETUP.md`): "From the feed" shows 6 cards with the newest post first; each opens the right post on Instagram in a new tab; on a phone the cards swipe sideways. Before setup (empty `data-feed`) it shows the "Follow @abs_qu" card, no errors.
+- [ ] **Flags:** once members have picked a country, a small flag appears next to their name in the Team section (two flags if they picked two). Members who haven't picked show none.
 
 ## 2. Login & logout
 
@@ -79,6 +83,19 @@ Browser A = admin, Browser B = exec (different browsers/profiles, same channel e
 - [ ] Messages containing `<script>` or HTML show as plain text (type `<b>hi</b>` — it must display literally).
 - [ ] On a phone: the ☰ button opens the channel list; the keyboard doesn't hide the message box; the send button is visible.
 
+## 6b. Channels, files and flags (new)
+
+- [ ] Sidebar shows **Club** (announcements, general, resources) and **Teams** (events, marketing, finance, student-reps, communications). There is **no #photos** channel.
+- [ ] **First login of each person** pops "Where are you from?". Pick a country → Save → flag appears next to your name in the top bar and on your messages. Pick a 3rd country → the oldest is swapped out (max two). "Ask me later" closes it and it comes back next login. "No flag, thanks" saves nothing visible and doesn't ask again. The 🌐 button reopens it.
+- [ ] After saving, reload the **public site** → Team section → your flag(s) next to your name (a minute or two; the browser keeps a 10-minute copy per tab session).
+- [ ] **Photo:** click the paperclip, choose a big phone photo (e.g. 5 MB). A preview chip appears ("Preparing…" then a size under 2 MB). Send. It appears with a thumbnail; the other browser sees it live; clicking opens it large; **Download** saves a `.jpg`.
+- [ ] **File:** send a PDF/Word file under 2 MB with and without text. Other browser: file card shows name and size; clicking downloads it and it opens correctly.
+- [ ] Drag a file onto the chat → "Drop to attach" overlay appears. Paste a screenshot (Cmd/Ctrl+V) into the message box → it attaches.
+- [ ] A file over 2 MB, or a `.exe` / `.html` / `.svg`, is refused with a clear red message and nothing is attached.
+- [ ] In `#announcements` as an exec: no paperclip, no message box (read-only). As an admin: both work.
+- [ ] Admin hovers a file message → trash → confirm: it disappears for everyone.
+- [ ] On a phone: paperclip and send button are both visible next to the message box; the colours are blue/cream, not black.
+
 ## 7. Firebase config is NOT committed
 
 Run these in the repo root; each should behave as described:
@@ -103,7 +120,7 @@ git status --short                               # firebase-config.js must NOT b
 
 Against the Firebase emulators — not part of the repo, so they don't add any dependency:
 
-- **73 security-rule checks** (all pass): signed-out, exec, admin, deactivated, and profile-less accounts, including attack attempts — spoofing another sender's name/role/uid, backdating timestamps, extra fields, 2,000+ character messages, self-promotion to admin, creating one's own profile, reading others' profiles, posting in archived/non-existent channels, editing/deleting messages, and renaming/deleting channels.
-- **51 end-to-end browser checks** (all pass): login/wrong password/no account enumeration, first-run channel setup, announcements read-only for execs, real-time delivery between two live sessions, persistence across reload, logout, admin panel (create/archive channel, approve, role change, deactivate — each reflected live on the other person's screen), and mobile layout.
+- **121 security-rule checks** (all pass; 48 of them cover attachments and the public flags collection): signed-out, exec, admin, deactivated, and profile-less accounts, including attack attempts — oversized/forged attachments, attaching pieces to someone else's message, writing someone else's flag, extra fields on the public flag document, spoofing another sender's name/role/uid, backdating timestamps, extra fields, 2,000+ character messages, self-promotion to admin, creating one's own profile, reading others' profiles, posting in archived/non-existent channels, editing/deleting messages, and renaming/deleting channels.
+- **90 end-to-end browser checks** (all pass): login/wrong password/no account enumeration, first-run channel setup, announcements read-only for execs, real-time delivery between two live sessions, persistence across reload, logout, admin panel (create/archive channel, approve, role change, deactivate — each reflected live on the other person's screen), the country prompt, photo and file uploads (a 1.2 MB file downloaded back byte-for-byte identical, size/type limits, chunk clean-up on delete), new channels being added to an existing database without touching old ones, flags appearing on the public Team section from a single read-only request, and mobile layout.
 
-Not tested (needs your real accounts/inboxes): the password-reset email, the live Firebase Hosting deploy, and the look on your own phone/browsers.
+Not tested (needs your real accounts/inboxes): the live Behold Instagram feed (tested with a mock of its documented response format), the password-reset email, the live Firebase Hosting deploy, and the look on your own phone/browsers.

@@ -1,9 +1,10 @@
 /* ==========================================================================
    ABSQU — site script. Vanilla JS, no dependencies, no network calls except
-   the optional Instagram embed (loaded only when the feed scrolls near).
+   two lazy, optional fetches: the Instagram feed (Behold) and the team flags (Firestore,
+   read-only, only when the Team section scrolls near). Both fail silently.
    1. Aurora shader (WebGL)     4. Mobile menu + active nav
    2. Scroll-expanding hero     5. Spotlight, count-up, copy email
-   3. Reveal on scroll          6. Lazy Instagram embeds, exec-login hint
+   3. Reveal on scroll          6. Instagram feed, team flags, exec-login hint
    ========================================================================== */
 (() => {
   'use strict';
@@ -53,7 +54,7 @@
         float rD=smoothstep(.7,.02, abs(q.y+.02-cos(q.x*1.2+t*.12)*.46));  // blue
         float grain=fbm(q*2.6+t*.04);
 
-        vec3 col=vec3(.06,.06,.06);
+        vec3 col=vec3(.05,.17,.30);
         col+=vec3(.78,.06,.18)*rA*.42;
         col+=vec3(.95,.76,.19)*rB*.30;
         col+=vec3(.00,.59,.43)*rC*.36;
@@ -264,22 +265,130 @@
   })();
 
   /* ------------------------------------------------------------------
-     6a. Instagram embeds — load Instagram's script only once the feed
-         is about to scroll into view, so it never slows first paint.
+     6a. Instagram feed. Posts come from a Behold JSON feed (free plan: 6
+         newest posts, refreshed daily). We render our own cards, so the
+         section matches the site. The feed URL lives in #feed[data-feed].
+         Cached for 3 h in this browser so repeat visits don't use up
+         Behold's monthly view allowance. Without a feed, a static
+         "Follow us" card is shown instead.
      ------------------------------------------------------------------ */
   (() => {
     const feed = $('#feed');
     if (!feed) return;
-    let loaded = false;
-    const load = () => {
-      if (loaded) return; loaded = true;
-      const s = document.createElement('script');
-      s.async = true; s.src = 'https://www.instagram.com/embed.js';
-      document.body.appendChild(s);
+    const url = (feed.dataset.feed || '').trim();
+    if (!/^https:\/\/feeds\.behold\.so\/[A-Za-z0-9_-]+$/.test(url)) return; // keep the fallback card
+    const CACHE = 'absqu.igfeed', TTL = 3 * 3600 * 1000;
+    const read = () => { try { return JSON.parse(localStorage.getItem(CACHE) || 'null'); } catch (e) { return null; } };
+    const write = d => { try { localStorage.setItem(CACHE, JSON.stringify({ at: Date.now(), url, d })); } catch (e) { /* storage blocked */ } };
+    const dateFmt = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' });
+    const svg = id => { const n = 'http://www.w3.org/2000/svg', s = document.createElementNS(n, 'svg'); s.setAttribute('class', 'icon'); s.setAttribute('aria-hidden', 'true'); const u = document.createElementNS(n, 'use'); u.setAttribute('href', '#' + id); s.append(u); return s; };
+    const mk = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+
+    const imageOf = p => {
+      const sz = p.sizes || {};
+      if (p.mediaType === 'VIDEO') return p.thumbnailUrl || sz.medium?.mediaUrl || sz.large?.mediaUrl || '';
+      return sz.medium?.mediaUrl || sz.large?.mediaUrl || sz.small?.mediaUrl || p.mediaUrl || p.thumbnailUrl || '';
     };
+    const card = p => {
+      const href = typeof p.permalink === 'string' && /^https:\/\/(www\.)?instagram\.com\//.test(p.permalink) ? p.permalink : 'https://www.instagram.com/abs_qu/';
+      const src = imageOf(p);
+      const cap = String(p.prunedCaption || p.caption || '').replace(/\s+/g, ' ').trim().slice(0, 160);
+      const a = mk('a', 'igpost'); a.href = href; a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.setAttribute('aria-label', cap ? `Instagram post: ${cap}` : 'View this post on Instagram');
+      if (/^https:\/\//.test(src)) {
+        const img = new Image(); img.src = src; img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
+        img.addEventListener('error', () => img.remove());
+        a.append(img);
+      }
+      const top = mk('div', 'igpost__top'), chip = mk('span', 'igpost__chip'); chip.append(svg('i-insta')); top.append(chip);
+      if (p.mediaType === 'VIDEO' || p.mediaType === 'CAROUSEL_ALBUM') { const b = mk('span', 'igpost__badge'); b.append(svg(p.mediaType === 'VIDEO' ? 'i-play' : 'i-layers')); top.append(b); }
+      const meta = mk('div', 'igpost__meta'), when = p.timestamp ? new Date(p.timestamp) : null;
+      const view = mk('span', null, 'View post '); view.append(svg('i-go'));
+      meta.append(mk('span', null, when && !isNaN(when) ? dateFmt.format(when) : '@abs_qu'), view);
+      const capEl = mk('div', 'igpost__cap'); if (cap) capEl.append(mk('p', null, cap)); capEl.append(meta);
+      a.append(top, capEl);
+      return a;
+    };
+    const show = posts => {
+      const list = posts.filter(p => p && imageOf(p)).slice(0, 6);
+      if (!list.length) return false;
+      feed.replaceChildren(...list.map(card));
+      return true;
+    };
+
+    async function load() {
+      const c = read();
+      if (c && c.url === url && Date.now() - c.at < TTL && show(c.d.posts || [])) return;
+      feed.setAttribute('aria-busy', 'true');
+      try {
+        const r = await fetch(url, { headers: { Accept: 'application/json' } });
+        if (!r.ok) throw new Error(String(r.status));
+        const d = await r.json();
+        if (show(d.posts || [])) write({ posts: (d.posts || []).slice(0, 6) });
+      } catch (e) {
+        if (c && c.url === url) show(c.d.posts || []); // stale beats nothing; otherwise the fallback card stays
+      } finally { feed.removeAttribute('aria-busy'); }
+    }
     if (!('IntersectionObserver' in window)) { load(); return; }
-    const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { load(); io.disconnect(); } }, { rootMargin: '600px 0px' });
+    const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); load(); } }, { rootMargin: '500px 0px' });
     io.observe(feed);
+  })();
+
+  /* ------------------------------------------------------------------
+     6a-2. Team flags. Each exec picks their country in the exec area;
+         it's saved to a public, read-only Firestore collection (`team`:
+         name + country codes only — no emails, no roles). We read it
+         with one plain REST call when the Team section is about to
+         scroll into view, then add flags next to matching names.
+         No Firebase SDK is loaded; if anything fails, no flags show.
+     ------------------------------------------------------------------ */
+  (() => {
+    const team = $('#team');
+    if (!team) return;
+    const CACHE = 'absqu.flags', TTL = 10 * 60 * 1000;
+    const NAMES = { al: 'Albania', ba: 'Bosnia & Herzegovina', bg: 'Bulgaria', gr: 'Greece', hr: 'Croatia', me: 'Montenegro', mk: 'North Macedonia', ro: 'Romania', rs: 'Serbia', si: 'Slovenia', xk: 'Kosovo' };
+    const norm = t => String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+    const read = () => { try { const c = JSON.parse(sessionStorage.getItem(CACHE) || 'null'); return c && Date.now() - c.at < TTL ? c.map : null; } catch (e) { return null; } };
+    const write = map => { try { sessionStorage.setItem(CACHE, JSON.stringify({ at: Date.now(), map })); } catch (e) { /* storage blocked */ } };
+
+    function apply(map) {
+      $$('.pname', team).forEach(n => {
+        if (n.nextElementSibling?.classList.contains('flags')) return;
+        const codes = (map[norm(n.textContent)] || []).filter(c => NAMES[c]).slice(0, 2);
+        if (!codes.length) return;
+        const wrap = document.createElement('span'); wrap.className = 'flags';
+        codes.forEach(c => {
+          const i = new Image(); i.className = 'flag-ico'; i.alt = NAMES[c]; i.title = NAMES[c]; i.width = 22; i.height = 16; i.decoding = 'async';
+          i.src = `https://flagcdn.com/w40/${c}.png`; i.srcset = `https://flagcdn.com/w80/${c}.png 2x`;
+          wrap.append(i);
+        });
+        n.after(wrap);
+      });
+    }
+
+    async function load() {
+      let map = read();
+      if (!map) {
+        try {
+          const cfg = (await import('./firebase-config.js')).default;
+          if (!cfg || !cfg.projectId || !cfg.apiKey || /YOUR_/.test(cfg.projectId)) return;
+          const base = cfg.useEmulators ? 'http://127.0.0.1:8080' : 'https://firestore.googleapis.com';
+          const r = await fetch(`${base}/v1/projects/${encodeURIComponent(cfg.projectId)}/databases/(default)/documents/team?pageSize=100&key=${encodeURIComponent(cfg.apiKey)}`);
+          if (!r.ok) return;
+          const j = await r.json();
+          map = {};
+          (j.documents || []).forEach(d => {
+            const f = d.fields || {}, name = f.name?.stringValue;
+            if (name) map[norm(name)] = (f.countries?.arrayValue?.values || []).map(v => v.stringValue).filter(Boolean);
+          });
+          write(map);
+        } catch (e) { return; } // no config / offline: simply no flags
+      }
+      apply(map);
+    }
+    if (!('IntersectionObserver' in window)) { load(); return; }
+    const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); load(); } }, { rootMargin: '700px 0px' });
+    io.observe(team);
   })();
 
   /* ------------------------------------------------------------------

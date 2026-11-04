@@ -14,6 +14,7 @@
   --gold:  #F2C230;
   --green: #00966E;
   --cream: #FFF8ED;
+  --ink:   #0D2B4C;   /* deep navy used where the site used to be near-black */
 
   /* Type */
   --head: "Baloo 2", "Baloo Bhai 2", ui-rounded, "Arial Rounded MT Bold", system-ui, sans-serif;
@@ -57,6 +58,45 @@
   --accent-ink: var(--black);
   --glow: rgba(255, 248, 237, 0.08);
 }
+.t-blue {
+  --bg: var(--blue);
+  --fg: var(--cream);
+  --fg-2: rgba(255, 248, 237, 0.88);
+  --fg-3: rgba(255, 248, 237, 0.7);
+  --line: rgba(255, 248, 237, 0.22);
+  --line-2: rgba(255, 248, 237, 0.4);
+  --surface: rgba(255, 248, 237, 0.09);
+  --surface-2: rgba(255, 248, 237, 0.17);
+  --accent: var(--gold);
+  --accent-ink: var(--black);
+  --glow: rgba(255, 248, 237, 0.12);
+}
+.t-red {
+  --bg: var(--red);
+  --fg: #fff;
+  --fg-2: rgba(255, 255, 255, 0.92);
+  --fg-3: rgba(255, 255, 255, 0.78);
+  --line: rgba(255, 255, 255, 0.28);
+  --line-2: rgba(255, 255, 255, 0.5);
+  --surface: rgba(255, 255, 255, 0.1);
+  --surface-2: rgba(255, 255, 255, 0.2);
+  --accent: var(--gold);
+  --accent-ink: var(--black);
+  --glow: rgba(255, 255, 255, 0.12);
+}
+.t-white {
+  --bg: var(--white);
+  --fg: var(--black);
+  --fg-2: rgba(17, 17, 17, 0.76);
+  --fg-3: rgba(17, 17, 17, 0.64);
+  --line: rgba(17, 17, 17, 0.12);
+  --line-2: rgba(17, 17, 17, 0.26);
+  --surface: var(--cream);
+  --surface-2: #f7ecd9;
+  --accent: var(--red);
+  --accent-ink: var(--white);
+  --glow: rgba(15, 76, 129, 0.07);
+}
 .t-cream {
   --bg: var(--cream);
   --fg: var(--black);
@@ -78,7 +118,7 @@
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 8px); }
 body {
   margin: 0;
-  background: var(--black);
+  background: var(--ink);
   color: var(--cream);
   font-family: var(--body);
   font-size: 1rem;
@@ -138,6 +178,7 @@ ul, ol { padding: 0; list-style: none; }
   transition: transform 900ms var(--ease) 350ms;
 }
 .in .hl::after, .hl.in::after, .hero .hl::after { transform: scaleX(1) skewX(-12deg); }
+.t-blue .hl::after, .t-red .hl::after { background: #fff; opacity: 0.3; }
 
 /* --------------------------------------------------------------------------
    Layout primitives
@@ -165,8 +206,8 @@ ul, ol { padding: 0; list-style: none; }
 .btn:hover .icon.go { transform: translate(2px, -2px); }
 .btn--ghost { --bb: transparent; --bf: var(--cream); --bd: rgba(255, 248, 237, 0.4); }
 .btn--ghost:hover { background: rgba(255, 248, 237, 0.1); border-color: var(--cream); }
-.btn--ink { --bb: var(--black); --bf: var(--cream); }
-.btn--ink:hover { background: #000; }
+.btn--ink { --bb: var(--ink); --bf: var(--cream); }
+.btn--ink:hover { background: #091d35; }
 .btn--red { --bb: var(--red); --bf: var(--white); }
 .btn--red:hover { background: #a80d26; }
 .btn--sm { min-height: 42px; padding: 0 18px; font-size: 0.8125rem; }
@@ -201,7 +242,7 @@ ul, ol { padding: 0; list-style: none; }
   color: var(--cream);
 }
 .nav.is-solid {
-  background: rgba(17, 17, 17, 0.8);
+  background: rgba(13, 43, 76, 0.9);
   -webkit-backdrop-filter: saturate(150%) blur(18px);
   backdrop-filter: saturate(150%) blur(18px);
   border-color: rgba(255, 248, 237, 0.12);
@@ -241,7 +282,7 @@ ul, ol { padding: 0; list-style: none; }
 
 .menu {
   position: fixed; inset: 0; z-index: 90;
-  background: rgba(17, 17, 17, 0.96);
+  background: rgba(13, 43, 76, 0.97);
   -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
   display: grid; align-content: center; gap: 4px;
   padding: calc(var(--nav-h) + 16px) var(--gutter) 32px;
@@ -267,7 +308,7 @@ body.menu-open { overflow: hidden; }
 /* --------------------------------------------------------------------------
    Hero — the campus photo expands from a card to full-bleed as you scroll
    -------------------------------------------------------------------------- */
-.hero { position: relative; height: 250vh; z-index: 1; background: var(--black); }
+.hero { position: relative; height: 250vh; z-index: 1; background: var(--ink); }
 .hero__stage {
   position: sticky; top: 0;
   height: 100vh; height: 100dvh;
@@ -282,12 +323,12 @@ body.menu-open { overflow: hidden; }
     radial-gradient(50% 42% at 82% 24%, rgba(15, 76, 129, 0.5), transparent 62%),
     radial-gradient(52% 44% at 70% 82%, rgba(0, 150, 110, 0.3), transparent 62%),
     radial-gradient(40% 36% at 18% 84%, rgba(242, 194, 48, 0.24), transparent 62%),
-    #111;
+    var(--ink);
 }
 .hero__shader canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .hero__vignette {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background: radial-gradient(120% 90% at 50% 50%, transparent 38%, rgba(17, 17, 17, 0.6) 100%);
+  background: radial-gradient(120% 90% at 50% 50%, transparent 38%, rgba(8, 28, 52, 0.55) 100%);
 }
 .hero__media {
   position: absolute; left: 50%; top: 50%; z-index: 2; translate: -50% -50%;
@@ -302,7 +343,7 @@ body.menu-open { overflow: hidden; }
 .hero__media::after {
   content: ""; position: absolute; inset: 0;
   background:
-    linear-gradient(to top, rgba(17, 17, 17, 0.94), rgba(17, 17, 17, 0.2) 48%, rgba(17, 17, 17, 0.45)),
+    linear-gradient(to top, rgba(13, 43, 76, 0.94), rgba(13, 43, 76, 0.2) 48%, rgba(13, 43, 76, 0.45)),
     linear-gradient(120deg, rgba(15, 76, 129, 0.5), rgba(200, 16, 46, 0.18));
   opacity: calc(0.7 + var(--p) * 0.3);
 }
@@ -493,7 +534,7 @@ body.menu-open { overflow: hidden; }
 }
 .president:nth-child(2) { background: var(--red); color: #fff; }
 .president:hover { translate: 0 -4px; }
-.president .avatar { --s: clamp(72px, 9vw, 104px); background: var(--black); color: var(--cream); font-size: calc(var(--s) * 0.38); }
+.president .avatar { --s: clamp(72px, 9vw, 104px); background: var(--ink); color: var(--cream); font-size: calc(var(--s) * 0.38); }
 .president h3 { font-family: var(--head); font-weight: 700; font-size: clamp(1.7rem, 3vw, 2.5rem); line-height: 1; }
 .president .role { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.85; }
 .avatar {
@@ -515,17 +556,17 @@ body.menu-open { overflow: hidden; }
 .dept li:nth-child(4n+2) .avatar { background: var(--blue); color: #fff; }
 .dept li:nth-child(4n+3) .avatar { background: var(--gold); color: var(--black); }
 .dept li:nth-child(4n)   .avatar { background: var(--green); color: var(--black); }
-.dept--join { background: var(--cream); color: var(--black); border-color: var(--cream); display: flex; flex-direction: column; gap: 16px; justify-content: space-between; }
-.dept--join:hover { background: var(--white); border-color: var(--white); }
+.dept--join { background: var(--blue); color: var(--cream); border-color: var(--blue); display: flex; flex-direction: column; gap: 16px; justify-content: space-between; }
+.dept--join:hover { background: #0c3e69; border-color: #0c3e69; }
 .dept--join h3 { font-family: var(--head); font-weight: 700; font-size: clamp(1.7rem, 2.6vw, 2.2rem); line-height: 1; }
-.dept--join p { color: rgba(17, 17, 17, 0.74); font-size: 0.9375rem; }
-.dept--join .link { color: var(--red); }
+.dept--join p { color: rgba(255, 248, 237, 0.88); font-size: 0.9375rem; }
+.dept--join .link { color: var(--gold); }
 
 /* --------------------------------------------------------------------------
    Gallery + Instagram
    -------------------------------------------------------------------------- */
 .gallery { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: minmax(190px, auto); gap: 14px; }
-.shot { position: relative; border-radius: var(--radius); overflow: hidden; background: var(--black); color: #fff; min-height: 220px; }
+.shot { position: relative; border-radius: var(--radius); overflow: hidden; background: var(--ink); color: #fff; min-height: 220px; }
 .shot img { width: 100%; height: 100%; object-fit: cover; transition: scale 1.4s var(--ease); }
 .shot:hover img { scale: 1.05; }
 .shot::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(17, 17, 17, 0.82), transparent 55%); pointer-events: none; }
@@ -550,9 +591,49 @@ body.menu-open { overflow: hidden; }
 .feed { margin-top: clamp(64px, 8vw, 112px); display: grid; gap: 30px; }
 .feed__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px 32px; }
 .feed__head p { color: var(--fg-2); margin-top: 10px; }
-.feed__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 18px; align-items: start; min-height: 120px; }
-.feed__grid .instagram-media { margin: 0 !important; min-width: 0 !important; max-width: 100% !important; width: 100% !important; border-radius: 16px !important; }
-.feed__grid > div { min-width: 0; }
+.feed__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.igpost {
+  position: relative; display: block; aspect-ratio: 4 / 5; border-radius: 24px; overflow: hidden; isolation: isolate;
+  background: var(--blue); color: #fff;
+  box-shadow: 0 18px 40px -26px rgba(13, 43, 76, 0.55);
+  transition: translate var(--t) var(--ease), box-shadow var(--t) var(--ease);
+}
+.igpost:hover { translate: 0 -6px; box-shadow: 0 28px 50px -24px rgba(13, 43, 76, 0.7); }
+.igpost img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale 1.2s var(--ease); }
+.igpost:hover img { scale: 1.06; }
+.igpost::after { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(to top, rgba(8, 28, 52, 0.88) 0%, rgba(8, 28, 52, 0.35) 38%, transparent 62%); }
+.igpost__top { position: absolute; z-index: 2; top: 14px; left: 14px; right: 14px; display: flex; justify-content: space-between; align-items: center; }
+.igpost__chip, .igpost__badge { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: rgba(255, 248, 237, 0.92); color: var(--ink); backdrop-filter: blur(6px); }
+.igpost__chip .icon, .igpost__badge .icon { width: 17px; height: 17px; }
+.igpost__cap { position: absolute; z-index: 2; left: 18px; right: 18px; bottom: 16px; display: grid; gap: 8px; }
+.igpost__cap p { font-size: 0.875rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; color: rgba(255, 255, 255, 0.95); text-wrap: pretty; }
+.igpost__meta { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-weight: 600; font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
+.igpost__meta span:last-child { display: inline-flex; align-items: center; gap: 6px; }
+.igpost__meta .icon { width: 13px; height: 13px; transition: translate var(--t) var(--ease); }
+.igpost:hover .igpost__meta .icon { translate: 3px -3px; }
+.igpost--skel { background: linear-gradient(100deg, rgba(15, 76, 129, 0.1) 30%, rgba(15, 76, 129, 0.2) 50%, rgba(15, 76, 129, 0.1) 70%) 0 0 / 220% 100%; box-shadow: none; animation: skel 1.4s linear infinite; }
+.igpost--skel::after { display: none; }
+@keyframes skel { to { background-position: -120% 0; } }
+.feed__fallback {
+  grid-column: 1 / -1; display: grid; gap: 22px; justify-items: start; padding: clamp(28px, 4vw, 52px); border-radius: 28px; color: #fff;
+  background: radial-gradient(60% 90% at 90% 0%, rgba(242, 194, 48, 0.45), transparent 60%), radial-gradient(70% 90% at 0% 100%, rgba(200, 16, 46, 0.55), transparent 60%), var(--blue);
+}
+.feed__fallback h4 { font-family: var(--head); font-weight: 700; font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1; max-width: 18ch; }
+.feed__fallback p { max-width: 46ch; color: rgba(255, 255, 255, 0.9); }
+@media (max-width: 900px) {
+  .feed__grid { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; margin-inline: calc(var(--gutter) * -1); padding: 6px var(--gutter) 22px; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .feed__grid::-webkit-scrollbar { display: none; }
+  .igpost { flex: 0 0 min(76%, 320px); scroll-snap-align: center; }
+  .feed__fallback { flex: 1 0 100%; }
+}
+@media (prefers-reduced-motion: reduce) { .igpost--skel { animation: none; } }
+
+/* Country flags next to team names (filled in from the exec area) */
+.flags { display: inline-flex; align-items: center; gap: 5px; margin-left: 9px; vertical-align: -1px; }
+.dept li .flags { margin-left: -6px; }
+.flag-ico { width: 22px; height: 16px; border-radius: 3px; object-fit: cover; box-shadow: 0 0 0 1px rgba(17, 17, 17, 0.2); flex: none; }
+.president .flag-ico { width: 30px; height: 22px; border-radius: 4px; box-shadow: 0 0 0 1.5px rgba(17, 17, 17, 0.25); }
+.president h3 .flags { margin-left: 12px; vertical-align: 2px; }
 
 /* --------------------------------------------------------------------------
    Contact
@@ -562,8 +643,8 @@ body.menu-open { overflow: hidden; }
   content: ""; position: absolute; left: 50%; top: 0; translate: -50% -45%;
   width: min(1200px, 130vw); height: 640px; pointer-events: none; filter: blur(30px);
   background:
-    radial-gradient(40% 50% at 30% 50%, rgba(200, 16, 46, 0.3), transparent 70%),
-    radial-gradient(40% 50% at 70% 50%, rgba(15, 76, 129, 0.45), transparent 70%);
+    radial-gradient(40% 50% at 28% 50%, rgba(242, 194, 48, 0.32), transparent 70%),
+    radial-gradient(40% 50% at 72% 50%, rgba(15, 76, 129, 0.55), transparent 70%);
 }
 .contact { position: relative; display: grid; gap: clamp(30px, 4vw, 52px); }
 .contact .h2 { font-size: clamp(3rem, 8vw, 7.4rem); max-width: 11ch; line-height: 0.9; }
@@ -580,7 +661,7 @@ body.menu-open { overflow: hidden; }
 /* --------------------------------------------------------------------------
    Footer
    -------------------------------------------------------------------------- */
-.footer { background: var(--black); color: var(--cream); padding: 44px 0 calc(40px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid rgba(255, 248, 237, 0.12); }
+.footer { background: var(--ink); color: var(--cream); padding: 44px 0 calc(40px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid rgba(255, 248, 237, 0.12); }
 .footer__inner { display: grid; gap: 28px; }
 .footer__row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px 40px; }
 .footer__links { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 0.875rem; font-weight: 500; color: rgba(255, 248, 237, 0.74); }

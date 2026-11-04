@@ -83,13 +83,15 @@ I chose this over Firebase *custom claims* because setting custom claims require
 
 > Do this again any time `firestore.rules` changes in the repo.
 
-What these rules guarantee (checked by an automated suite of 73 tests before this was handed over):
+What these rules guarantee (checked by an automated suite of 121 tests before this was handed over):
 
 - Nobody who is signed out can read or write anything.
 - A signed-in account with **no active profile** can read/write nothing (it can only ask an admin for approval).
 - **Execs** can read every channel and post in every channel **except** any channel marked `adminOnly` (that's `#announcements`). They cannot spoof another person's name or role.
 - **Admins** can additionally post announcements, create/archive channels, list members, change roles, deactivate members, delete messages and approve new members.
 - Admins cannot change their *own* role or deactivate *themselves* (so you can't lock yourself out by accident).
+- **File attachments** follow the same rules as messages (nobody can attach in `#announcements` unless they're an admin; nothing in archived channels). Limits are enforced by the database, not just the page: ≤ 2 MB, ≤ 5 pieces, only the sender can add the pieces of their own message.
+- **Team flags (`team` collection) are the one thing that is public.** Anyone, logged in or not, can *read* it — it holds only a display name and up to two country codes, nothing else. Only the member themselves can write their own entry, and only with a name that matches their profile.
 
 ## Part 6 — Create the 15 accounts and assign roles
 
@@ -157,7 +159,16 @@ You create the **two admin** profiles manually — this is the one thing the web
 
 ### 6d. First sign-in as admin creates the channels
 
-The first time an **admin** signs in, the site automatically creates `#announcements` (admins-post-only), `#general`, `#events`, `#marketing` and `#finance`. You don't create these by hand. Admins can add/archive more later from **Admin panel → Channels**.
+Every time an **admin** signs in, the site checks that these channels exist and creates any that are missing (it never changes or removes ones that already exist):
+
+| Group | Channels |
+|---|---|
+| **Club** | `#announcements` (admins post, everyone reads), `#general`, `#resources` (flyers, templates, forms, documents) |
+| **Teams** | `#events`, `#marketing`, `#finance`, `#student-reps`, `#communications` |
+
+You don't create these by hand. Admins can add more (for example one per event) or archive old ones from **Admin panel → Channels**. There is deliberately **no #photos channel**: photos are shrunk to fit, but big event photo sets are best shared as a Google Drive / Dropbox link posted in `#resources` or `#events`.
+
+> **Updating from the first version?** Just run `firebase deploy` again (it publishes the new rules too), then sign in as an admin once — the three new team channels appear by themselves.
 
 ## Part 7 — Put the site on Firebase Hosting
 
@@ -219,6 +230,21 @@ Open **http://localhost:8000/exec/** (needs the 7a config file).
 
 ---
 
+## Part 8 — Files, photos and country flags (how they work)
+
+### Sending files and photos
+In any channel where you can post, click the **paperclip** (or drag a file onto the chat, or paste a screenshot). Photos are shrunk and re-saved as JPEG automatically (this also removes location data). Other files can be PDF, Word/Excel/PowerPoint, text/CSV, zip, and similar, **up to 2 MB**. Click a photo to view it large; click a file to download it.
+
+> **Why 2 MB?** Firebase's file storage product (Cloud Storage) now needs the paid Blaze plan, so to stay on the free plan the files are stored inside Firestore, in small pieces, alongside the message. Free-plan Firestore holds 1 GB in total and allows 50,000 reads a day — plenty for an exec team, but it's meant for flyers, forms and screenshots, **not** photo albums or video. For those, post a Drive/Dropbox link.
+
+### Country flags
+The first time each person logs in, a pop-up asks **"Where are you from?"**. They pick one country (or two, if they're mixed) from the 11 Balkan countries, or choose "No flag, thanks", or "Ask me later" (it asks again next login). The flag then shows:
+
+- next to their name on the **public website's Team section** — matched by name, so the name in **Admin panel → Members** must match the name on the website exactly (renaming someone there also updates their flag entry), and
+- next to their name in the exec chat.
+
+Anyone can change theirs any time with the 🌐 globe button in the top bar. Admins don't need to do anything. The website only fetches flags when a visitor scrolls to the Team section, and shows none if that fails.
+
 ## Day-to-day
 
 | I want to… | Do this |
@@ -228,6 +254,7 @@ Open **http://localhost:8000/exec/** (needs the 7a config file).
 | **Change someone's role** | Admin panel → **Members** → use the role dropdown (you'll be asked to confirm). It takes effect on their screen instantly. |
 | **Post an announcement** | Admins only: open `#announcements` and type. Execs see it read-only. |
 | **Reset a password** | The person clicks **Forgot password?** on the login page, *or* Authentication → Users → ⋮ on their row → **Reset password**. |
+| **Fix a flag that isn't showing on the website** | Check the person has picked one (🌐 button), and that their name in Admin panel → Members is spelled exactly like on the website. |
 | **Make a new channel** | Admin panel → **Channels** → name it, tick *Only admins can post* if it's announcement-style → **Create**. |
 
 ## Troubleshooting
@@ -240,6 +267,8 @@ Open **http://localhost:8000/exec/** (needs the 7a config file).
 | **"Incorrect email or password."** | Correct behaviour for a wrong password *or* an unknown email (deliberately the same message). Reset the password in Authentication → Users. |
 | Stuck on **"Waiting for approval"** | They have an account but no profile. An admin approves them (Part 6c), or you add their `users/<UID>` document by hand. |
 | Signed in but no channels | An **admin** needs to sign in once so the default channels get created. |
+| Flag missing on the website | The person hasn't picked one yet, or their name differs from the website's spelling, or you haven't run `firebase deploy` since this feature was added (the rules must be published for the public read to work). |
+| *"That file is too big"* / *"isn't supported"* | The limit is 2 MB and certain types are blocked on purpose (`.exe`, `.html`, `.svg`, scripts). Post a Drive/Dropbox link for anything bigger. |
 | Someone says "I can't post" in `#announcements` | Working as designed — only admins post there. |
 | An admin tool vanished | They've been changed to *exec* (or deactivated). Check Admin panel → Members. |
 | Strangers in the Approvals list | Email/Password sign-up can't be fully switched off on the free plan, so anyone could create an account; rules give those accounts **zero access**, and the worst outcome is a harmless request in Approvals. Click **Dismiss**. Never approve an email you don't recognise. |
