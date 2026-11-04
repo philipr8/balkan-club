@@ -13,7 +13,7 @@ Test on the live URL **https://<project-id>.web.app/** and, if you've changed co
 - [ ] Team section shows **exactly** the 2026–27 roster, grouped: Co-Presidents (Philip Radeff, Alexander Jakov); Marketing (Monique Popazu, Rovena Qosaj, Anastasija Dimovska); Events (Nicole Terzieva, Daris Lohja, Katarina Trutina); Finance (Angela Projkovska, Sara Lipo, Emma Stavre); Student Reps (Alina Riabova, Ivan Hodgson); Communications & Outreach (Teigan Minas, Maria Diakoloukas).
 - [ ] **Thomas Veljanovski** and **Emily Staroselski** appear nowhere (try `Ctrl/Cmd+F` for each).
 - [ ] Motto "Because at ABSQU, everyone is family!" shows in the hero and the contact section; all 11 countries are listed.
-- [ ] Links work: `@abs_qu` → https://www.instagram.com/abs_qu/ · `QueensABSQU@gmail.com` opens a mail draft · `linktr.ee/absqu` opens Linktree.
+- [ ] Links work: `@abs_qu` → https://www.instagram.com/abs_qu/ · `QueensABSQU@outlook.com` opens a mail draft · `linktr.ee/absqu` opens Linktree.
 - [ ] Old hash links still land correctly: `…web.app/#about`, `#countries`, `#events`, `#team`, `#gallery`, `#instagram`, `#contact`.
 - [ ] Phone (or browser dev tools at 390 px wide): no sideways scrolling, menu button opens a full-screen menu, text is readable.
 - [ ] Dev tools → **Network** tab, reload (don't scroll): **no requests** to `gstatic.com/firebasejs`, `firestore.googleapis.com` or `identitytoolkit`. Scroll to Team: exactly **one** read-only request to `firestore.googleapis.com/…/documents/team` appears (country flags); the Firebase SDK (`gstatic.com/firebasejs`) is never loaded on the public page.

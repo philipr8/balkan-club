@@ -5,7 +5,7 @@ Website for the Association Of Balkan Students at Queen's University, plus an op
 **Live site:** `https://<project-id>.web.app` (Firebase Hosting)  
 **Exec area:** `https://<project-id>.web.app/exec/`  
 **Instagram:** https://www.instagram.com/abs_qu/ · **Linktree:** https://linktr.ee/absqu  
-**Email:** QueensABSQU@gmail.com
+**Email:** QueensABSQU@outlook.com
 
 ---
 
@@ -19,7 +19,7 @@ Website for the Association Of Balkan Students at Queen's University, plus an op
 
 ## Brand
 
-The site is **white first, with red, blue and yellow** (no green, no black backgrounds).
+The site is **white first, with red, blue and yellow** (no green, no black backgrounds); the opening hero slide is red-led.
 
 | Colour | Hex | | Colour | Hex |
 |---|---|---|---|---|
@@ -27,7 +27,7 @@ The site is **white first, with red, blue and yellow** (no green, no black backg
 | Balkan Red | `#C8102E` | | Warm Cream | `#FFF8ED` |
 | Balkan Blue | `#0F4C81` | | Ink (text, navy) | `#0D2B4C` / `#111111` |
 
-The logo (`docs/images/logo.jpg`) is only ever placed on white or cream, never recoloured or stretched. Tokens live at the top of `docs/style.css` (`:root`). The hero is a white page with red/blue/yellow ribbons; the "ABSQU" title is navy on the page and turns white where it crosses the photo card.
+The logo (`docs/images/logo.jpg`) is only ever placed on white or cream, never recoloured or stretched. Tokens live at the top of `docs/style.css` (`:root`). The first slide (hero) is red in the middle with blue, yellow and white gathering around the edges; the "ABSQU" title is white. Everything below it is white-first.
 
 ## Project structure
 

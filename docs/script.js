@@ -48,21 +48,21 @@
         q+=(ptr-q)*.035;
 
         // four ribbons, one per brand colour
-        float rA=smoothstep(.58,.02,abs(q.y-.62+sin(q.x*1.7+t*.22)*.3));   // red
+        float rA=smoothstep(.58,.02,abs(q.y-.62+sin(q.x*1.7+t*.22)*.3));   // white
         float rB=smoothstep(.55,.02,abs(q.y-.12-cos(q.x*2.2-t*.19)*.26));  // yellow
         float rC=smoothstep(.6,.02, abs(q.y+.42+sin(q.x*1.5-t*.17)*.3));   // blue
         float rD=smoothstep(.7,.02, abs(q.y+.02-cos(q.x*1.2+t*.12)*.46));  // blue wash
         float grain=fbm(q*2.6+t*.04);
 
-        // white page; red, yellow and blue ribbons drift across it
-        vec3 col=vec3(1.);
-        col=mix(col,vec3(.06,.30,.51),rD*.20);  // soft blue wash
-        col=mix(col,vec3(.06,.30,.51),rC*.40);  // blue
-        col=mix(col,vec3(.78,.06,.18),rA*.46);  // red
-        col=mix(col,vec3(.95,.76,.19),rB*.80);  // yellow last, so overlaps stay warm (never green)
-        col+=(grain-.5)*.035;
-        float vig=smoothstep(2.0,.4,length(p));
-        col=mix(vec3(1.),col,.4+.6*vig);
+        // red field in the middle; white, blue and yellow ribbons gather around the edges
+        float edge=.22+.78*smoothstep(.15,1.05,length(p*vec2(.78,1.)));
+        vec3 red=vec3(.78,.06,.18);
+        vec3 col=red;
+        col=mix(col,vec3(1.),rA*.62*edge);        // white
+        col=mix(col,vec3(.06,.30,.51),rD*.60*edge); // blue wash
+        col=mix(col,vec3(.06,.30,.51),rC*.85*edge); // blue
+        col=mix(col,vec3(.95,.76,.19),rB*.95*edge); // yellow last: overlaps stay warm
+        col+=(grain-.5)*.04;
         gl_FragColor=vec4(pow(max(col,vec3(0.)),vec3(.95)),1.);
       }`;
 
@@ -255,8 +255,8 @@
     if (copy) {
       const label = $('span', copy), use = $('use', copy);
       copy.addEventListener('click', async () => {
-        try { await navigator.clipboard.writeText('QueensABSQU@gmail.com'); }
-        catch (e) { location.href = 'mailto:QueensABSQU@gmail.com'; return; }
+        try { await navigator.clipboard.writeText('QueensABSQU@outlook.com'); }
+        catch (e) { location.href = 'mailto:QueensABSQU@outlook.com'; return; }
         copy.classList.add('is-done'); label.textContent = 'Copied!'; use.setAttribute('href', '#i-check');
         setTimeout(() => { copy.classList.remove('is-done'); label.textContent = 'Copy'; use.setAttribute('href', '#i-copy'); }, 2200);
       });
