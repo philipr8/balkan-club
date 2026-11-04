@@ -25,13 +25,14 @@ Roles are stored in Firestore: one document per person at `users/<their UID>` wi
 ```
 name    (string)   "Philip Radeff"
 email   (string)   "philip@example.com"
-role    (string)   "admin"  or  "exec"
+role    (string)   "admin"  or  "exec"    ("admin" is what the site calls a Co-President)
 active  (boolean)  true     (false = deactivated, locked out immediately)
 ```
 
 I chose this over Firebase *custom claims* because setting custom claims requires running server code (Cloud Functions), which requires the paid Blaze plan. A Firestore role document is free, can be changed by an admin from inside the site, and is enforced by `firestore.rules` on every single read and write.
 
-- **admin** → Philip Radeff and Alexander Jakov only.
+- **`admin` = Co-President** → Philip Radeff and Alexander Jakov only. The word "admin" only appears in the database (that's the value you type in the console); everywhere on the website it's shown as **Co-President**, and no one sees any "admin" wording.
+- **`exec`** → everyone else. They read and post in every channel (except the read-only `#announcements`) and have no management tools.
 - **exec** → everyone else.
 
 ---
@@ -86,11 +87,11 @@ I chose this over Firebase *custom claims* because setting custom claims require
 What these rules guarantee (checked by an automated suite of 122 tests before this was handed over):
 
 - Nobody who is signed out can read or write anything.
-- A signed-in account with **no active profile** can read/write nothing (it can only ask an admin for approval).
+- A signed-in account with **no active profile** can read/write nothing (it can only ask a Co-President for approval).
 - **Execs** can read every channel and post in every channel **except** any channel marked `adminOnly` (that's `#announcements`). They cannot spoof another person's name or role.
-- **Admins** can additionally post announcements, create/archive channels, list members, change roles, deactivate members, delete messages and approve new members.
-- Admins cannot change their *own* role or deactivate *themselves* (so you can't lock yourself out by accident).
-- **File attachments** follow the same rules as messages (nobody can attach in `#announcements` unless they're an admin; nothing in archived channels). Limits are enforced by the database, not just the page: ≤ 2 MB, ≤ 5 pieces, only the sender can add the pieces of their own message.
+- **Co-Presidents** can additionally post announcements, create/archive channels, list members, change roles, deactivate members, delete messages and approve new members.
+- Co-Presidents cannot change their *own* role or deactivate *themselves* (so you can't lock yourself out by accident).
+- **File attachments** follow the same rules as messages (nobody can attach in `#announcements` unless they're a Co-President; nothing in archived channels). Limits are enforced by the database, not just the page: ≤ 2 MB, ≤ 5 pieces, only the sender can add the pieces of their own message.
 - **Team flags (`team` collection) are the one thing that is public.** Anyone, logged in or not, can *read* it — it holds only a display name and up to two country codes, nothing else. Only the member themselves can write their own entry, and only with a name that matches their profile.
 
 ## Part 6 — Create the 15 accounts and assign roles
@@ -102,12 +103,12 @@ For **each** person in the table:
 1. Left sidebar → **Authentication** → **Users** tab → **Add user**.
 2. Type their **email** and a **temporary password** (min. 6 characters; use something strong and unique for each person).
 3. Click **Add user**.
-4. In the Users list, find that person's row and **copy the "User UID"** (a ~28-character string like `kP3x…`). You'll need it in 6b for the two admins.
+4. In the Users list, find that person's row and **copy the "User UID"** (a ~28-character string like `kP3x…`). You'll need it in 6b for the two Co-Presidents.
 
 | # | Name | Group | Role |
 |---|------|-------|------|
-| 1 | Philip Radeff | Co-President | **admin** |
-| 2 | Alexander Jakov | Co-President | **admin** |
+| 1 | Philip Radeff | Co-President | **admin** (= Co-President) |
+| 2 | Alexander Jakov | Co-President | **admin** (= Co-President) |
 | 3 | Monique Popazu | Marketing | exec |
 | 4 | Rovena Qosaj | Marketing | exec |
 | 5 | Anastasija Dimovska | Marketing | exec |
@@ -122,11 +123,11 @@ For **each** person in the table:
 | 14 | Teigan Minas | Communications & Outreach | exec |
 | 15 | Maria Diakoloukas | Communications & Outreach | exec |
 
-> That's 2 admins + 13 exec accounts = 15 people. Use each person's real email so the **"Forgot password?"** link on the login page works for them. Send each person their temporary password privately (not in a group chat with outsiders), and tell them to use "Forgot password?" to choose their own.
+> That's 2 Co-Presidents + 13 exec accounts = 15 people. Use each person's real email so the **"Forgot password?"** link on the login page works for them. Send each person their temporary password privately (not in a group chat with outsiders), and tell them to use "Forgot password?" to choose their own.
 
-### 6b. Give the two admins their profile (by hand, once)
+### 6b. Give the two Co-Presidents their profile (by hand, once)
 
-You create the **two admin** profiles manually — this is the one thing the website can't do for you, because admins are what unlock everything else.
+You create the **two Co-President** profiles manually — this is the one thing the website can't do for you, because Co-Presidents are what unlock everything else.
 
 1. Left sidebar → **Firestore Database** → **Data** tab.
 2. Click **Start collection**.
@@ -150,25 +151,25 @@ You create the **two admin** profiles manually — this is the one thing the web
 
 **Option A — recommended (about 10 seconds each, inside the website):**
 
-1. Each exec visits the exec login page and signs in once with their temporary password. They'll see **"Waiting for approval"**. That sends a request to the admins.
-2. Sign in yourself as Philip → click **Admin panel** (bottom-left) → **Approvals** tab.
+1. Each exec visits the exec login page and signs in once with their temporary password. They'll see **"Waiting for approval"**. That sends a request to the Co-Presidents.
+2. Sign in yourself as Philip → click **Co-President tools** (bottom-left) → **Approvals** tab.
 3. For each person: check their **display name** (it's guessed from their email — fix it to e.g. `Nicole Terzieva`), leave the role on **Exec**, click **Approve**.
 4. Their "Waiting for approval" screen unlocks by itself within a second or two — no refresh needed.
 
 **Option B — all by hand in the console:** repeat the steps in 6b for each person with `role` = `exec`. Same four fields, same rules (UID as Document ID, `active` boolean `true`).
 
-### 6d. First sign-in as admin creates the channels
+### 6d. First sign-in as Co-President creates the channels
 
-Every time an **admin** signs in, the site checks that these channels exist and creates any that are missing (it never changes or removes ones that already exist):
+Every time a **Co-President** signs in, the site checks that these channels exist and creates any that are missing (it never changes or removes ones that already exist):
 
 | Group | Channels |
 |---|---|
-| **Club** | `#announcements` (admins post, everyone reads), `#general`, `#resources` (flyers, templates, forms, documents) |
+| **Club** | `#announcements` (Co-Presidents post, everyone reads), `#general`, `#resources` (flyers, templates, forms, documents) |
 | **Teams** | `#events`, `#marketing`, `#finance`, `#student-reps`, `#communications` |
 
-You don't create these by hand. Admins can add more (for example one per event) or archive old ones from **Admin panel → Channels**. There is deliberately **no #photos channel**: photos are shrunk to fit, but big event photo sets are best shared as a Google Drive / Dropbox link posted in `#resources` or `#events`.
+You don't create these by hand. Co-Presidents can add more (for example one per event) or archive old ones from **Co-President tools → Channels**. There is deliberately **no #photos channel**: photos are shrunk to fit, but big event photo sets are best shared as a Google Drive / Dropbox link posted in `#resources` or `#events`.
 
-> **Updating from the first version?** Just run `firebase deploy` again (it publishes the new rules too), then sign in as an admin once — the three new team channels appear by themselves.
+> **Updating from the first version?** Just run `firebase deploy` again (it publishes the new rules too), then sign in as a Co-President once — the three new team channels appear by themselves.
 
 ## Part 7 — Put the site on Firebase Hosting
 
@@ -240,22 +241,22 @@ In any channel where you can post, click the **paperclip** (or drag a file onto 
 ### Country flags
 The first time each person logs in, a pop-up asks **"Where are you from?"**. They pick one country (or two, if they're mixed) from the 11 Balkan countries (plus Georgia), or choose "No flag, thanks", or "Ask me later" (it asks again next login). The club has already set a starting flag for every exec in the website's HTML (`docs/index.html`, Team section), so flags show on the site straight away. If a member picks something different in the pop-up, theirs replaces the default; "No flag, thanks" removes it. The flag shows:
 
-- next to their name on the **public website's Team section** — matched by name, so the name in **Admin panel → Members** must match the name on the website exactly (renaming someone there also updates their flag entry), and
+- next to their name on the **public website's Team section** — matched by name, so the name in **Co-President tools → Members** must match the name on the website exactly (renaming someone there also updates their flag entry), and
 - next to their name in the exec chat.
 
-Anyone can change theirs any time with the 🌐 globe button in the top bar. Admins don't need to do anything. The website only fetches flags when a visitor scrolls to the Team section, and shows none if that fails.
+Anyone can change theirs any time with the 🌐 globe button in the top bar. Co-Presidents don't need to do anything. The website only fetches flags when a visitor scrolls to the Team section, and shows none if that fails.
 
 ## Day-to-day
 
 | I want to… | Do this |
 |---|---|
-| **Add a new exec** | Authentication → Users → **Add user**. They sign in once, then Admin panel → **Approvals** → Approve. |
-| **Remove someone / end of term** | Admin panel → **Members** → switch **Active** off. They're signed out and locked out immediately. (Delete their account in Authentication → Users if you want it gone for good.) |
-| **Change someone's role** | Admin panel → **Members** → use the role dropdown (you'll be asked to confirm). It takes effect on their screen instantly. |
-| **Post an announcement** | Admins only: open `#announcements` and type. Execs see it read-only. |
+| **Add a new exec** | Authentication → Users → **Add user**. They sign in once, then Co-President tools → **Approvals** → Approve. |
+| **Remove someone / end of term** | Co-President tools → **Members** → switch **Active** off. They're signed out and locked out immediately. (Delete their account in Authentication → Users if you want it gone for good.) |
+| **Change someone's role** | Co-President tools → **Members** → use the role dropdown (you'll be asked to confirm). It takes effect on their screen instantly. |
+| **Post an announcement** | Co-Presidents only: open `#announcements` and type. Execs see it read-only. |
 | **Reset a password** | The person clicks **Forgot password?** on the login page, *or* Authentication → Users → ⋮ on their row → **Reset password**. |
-| **Fix a flag that isn't showing on the website** | Check the person has picked one (🌐 button), and that their name in Admin panel → Members is spelled exactly like on the website. |
-| **Make a new channel** | Admin panel → **Channels** → name it, tick *Only admins can post* if it's announcement-style → **Create**. |
+| **Fix a flag that isn't showing on the website** | Check the person has picked one (🌐 button), and that their name in Co-President tools → Members is spelled exactly like on the website. |
+| **Make a new channel** | Co-President tools → **Channels** → name it, tick *Only the Co-Presidents can post* if it's announcement-style → **Create**. |
 
 ## Troubleshooting
 
@@ -265,12 +266,12 @@ Anyone can change theirs any time with the 🌐 globe button in the top bar. Adm
 | *"Couldn't read your profile — the Firestore security rules may not be published yet"* | Run `firebase deploy --only firestore:rules` (or redo Part 5 in the console). |
 | *"Couldn't log you in. Please try again."* | Usually Email/Password isn't enabled (Part 3), or the config values are from a different project. |
 | **"Incorrect email or password."** | Correct behaviour for a wrong password *or* an unknown email (deliberately the same message). Reset the password in Authentication → Users. |
-| Stuck on **"Waiting for approval"** | They have an account but no profile. An admin approves them (Part 6c), or you add their `users/<UID>` document by hand. |
-| Signed in but no channels | An **admin** needs to sign in once so the default channels get created. |
+| Stuck on **"Waiting for approval"** | They have an account but no profile. A Co-President approves them (Part 6c), or you add their `users/<UID>` document by hand. |
+| Signed in but no channels | A **Co-President** needs to sign in once so the default channels get created. |
 | Flag missing on the website | The person hasn't picked one yet, or their name differs from the website's spelling, or you haven't run `firebase deploy` since this feature was added (the rules must be published for the public read to work). |
 | *"That file is too big"* / *"isn't supported"* | The limit is 2 MB and certain types are blocked on purpose (`.exe`, `.html`, `.svg`, scripts). Post a Drive/Dropbox link for anything bigger. |
-| Someone says "I can't post" in `#announcements` | Working as designed — only admins post there. |
-| An admin tool vanished | They've been changed to *exec* (or deactivated). Check Admin panel → Members. |
+| Someone says "I can't post" in `#announcements` | Working as designed — only Co-Presidents post there. |
+| The Co-President tools vanished | They've been changed to *Exec* (or deactivated). Check Co-President tools → Members. |
 | Strangers in the Approvals list | Email/Password sign-up can't be fully switched off on the free plan, so anyone could create an account; rules give those accounts **zero access**, and the worst outcome is a harmless request in Approvals. Click **Dismiss**. Never approve an email you don't recognise. |
 
 ## Optional: test locally without touching your real project

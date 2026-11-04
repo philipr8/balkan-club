@@ -409,7 +409,7 @@
     try { hint = JSON.parse(localStorage.getItem('absqu.execHint') || 'null'); } catch (e) { /* storage blocked */ }
     if (!hint || typeof hint.name !== 'string') return;
     const first = hint.name.trim().split(/\s+/)[0] || 'Team';
-    const role = hint.role === 'admin' ? 'admin' : 'exec';
+    const role = hint.role === 'admin' ? 'Co-President' : 'Exec';
     $$('[data-exec-link]').forEach(a => {
       const label = $('.lbl', a);
       if (!label) return;

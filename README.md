@@ -47,7 +47,7 @@ balkan-club/
     ├── firebase-config.example.js ← template (committed)
     ├── firebase-config.js         ← your real config (NOT committed)
     ├── exec/
-    │   ├── index.html             ← login + team chat + admin panel
+    │   ├── index.html             ← login + team chat + Co-President tools
     │   ├── exec.css
     │   └── exec.js
     └── images/
@@ -92,11 +92,11 @@ Everything public is in `docs/index.html`; find sections by their `id`:
 A private, optional team area at `/exec/` — login is never required to view the public site.
 
 - **Login:** Firebase Email/Password. Accounts are created by you in the Firebase console; there's no public sign-up.
-- **Roles:** `admin` (Philip Radeff, Alexander Jakov) and `exec` (everyone else), stored in Firestore at `users/{uid}` as `{ name, email, role, active }`. Enforced by `firestore.rules` on the server.
-- **Chat:** channels only — no direct messages. Club: `#announcements` (admin-post-only), `#general`, `#resources`; Teams: `#events`, `#marketing`, `#finance`, `#student-reps`, `#communications`. Real-time via Firestore listeners; sender name, flag and timestamp on every message.
+- **Roles:** Co-Presidents (stored as `admin`; Philip Radeff and Alexander Jakov) and `exec` (everyone else; they just read and post in the channels), stored in Firestore at `users/{uid}` as `{ name, email, role, active }`. Enforced by `firestore.rules` on the server.
+- **Chat:** channels only — no direct messages. Club: `#announcements` (Co-President-post-only), `#general`, `#resources`; Teams: `#events`, `#marketing`, `#finance`, `#student-reps`, `#communications`. Real-time via Firestore listeners; sender name, flag and timestamp on every message.
 - **Files & photos** in every channel you can post in (paperclip, drag-and-drop or paste): photos are shrunk automatically, other files up to 2 MB. Stored in Firestore (not Cloud Storage, which would need the paid plan).
 - **Country prompt:** on first login each person is asked where they're from (up to two flags) — shown on the public Team section and in chat.
-- **Admins** can create/archive channels, view members, change roles, deactivate members, approve new sign-ins, post announcements and delete messages.
+- **Co-Presidents** can create/archive channels, view members, change roles, deactivate members, approve new sign-ins, post announcements and delete messages.
 - **Config is never committed:** `docs/firebase-config.js` is gitignored; it exists only on your computer and is uploaded by `firebase deploy`. If it's absent, the public site is unaffected and `/exec/` just says it isn't switched on.
 
 Full walkthrough: **[FIREBASE_SETUP.md](FIREBASE_SETUP.md)**. QA list: **[TEST_CHECKLIST.md](TEST_CHECKLIST.md)**.

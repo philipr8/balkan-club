@@ -91,8 +91,8 @@
     <div class="card">
       <span class="badge-ico"><svg class="icon"><use href="#i-shield"/></svg></span>
       <h1>Waiting for approval</h1>
-      <p class="muted">You're signed in as <b id="pendEmail"></b>, but an admin hasn't activated your exec profile yet. They've been sent a request — this page will unlock by itself the moment they approve it.</p>
-      <p class="muted small">If it's taking a while, message an admin and give them this ID:</p>
+      <p class="muted">You're signed in as <b id="pendEmail"></b>, but a Co-President hasn't activated your profile yet. They've been sent a request — this page will unlock by itself the moment they approve it.</p>
+      <p class="muted small">If it's taking a while, message a Co-President and give them this ID:</p>
       <code class="uid" id="pendUid"></code>
     </div>
   </section>
@@ -107,8 +107,8 @@
       </div>
       <nav class="chlist" id="chList" aria-label="Channel list"></nav>
       <div class="side__admin" id="adminBox" hidden>
-        <p class="eyebrow">Admin</p>
-        <button class="btn btn--ghost btn--sm btn--block" id="adminBtn" type="button"><svg class="icon"><use href="#i-shield"/></svg>Admin panel <span class="count" id="pendCount" hidden></span></button>
+        <p class="eyebrow">Co-President</p>
+        <button class="btn btn--ghost btn--sm btn--block" id="adminBtn" type="button"><svg class="icon"><use href="#i-shield"/></svg>Co-President tools <span class="count" id="pendCount" hidden></span></button>
       </div>
     </aside>
 
@@ -138,14 +138,14 @@
   </section>
 </main>
 
-<!-- Admin panel -->
+<!-- Co-President tools -->
 <dialog id="adminDlg" aria-labelledby="adminTitle">
   <div class="dlg">
     <header class="dlg__head">
-      <h2 id="adminTitle">Admin panel</h2>
-      <button class="iconbtn" id="adminClose" type="button" aria-label="Close admin panel"><svg class="icon"><use href="#i-close"/></svg></button>
+      <h2 id="adminTitle">Co-President tools</h2>
+      <button class="iconbtn" id="adminClose" type="button" aria-label="Close Co-President tools"><svg class="icon"><use href="#i-close"/></svg></button>
     </header>
-    <div class="tabs" role="tablist" aria-label="Admin sections">
+    <div class="tabs" role="tablist" aria-label="Co-President tool sections">
       <button role="tab" id="tab-members" aria-controls="pane-members" aria-selected="true" data-pane="members">Members</button>
       <button role="tab" id="tab-pending" aria-controls="pane-pending" aria-selected="false" data-pane="pending" tabindex="-1">Approvals <span class="count" id="pendCount2" hidden></span></button>
       <button role="tab" id="tab-channels" aria-controls="pane-channels" aria-selected="false" data-pane="channels" tabindex="-1">Channels</button>

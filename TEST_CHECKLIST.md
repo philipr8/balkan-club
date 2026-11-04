@@ -1,6 +1,6 @@
 # Test checklist — ABSQU site + Exec area
 
-Work through this after setup (`FIREBASE_SETUP.md`) and again after any change to the site, `exec/` code, or `firestore.rules`. Tick each box. You need **two different browsers or profiles** (e.g. Chrome + a private window, or Chrome + Safari) for the real-time tests, and one admin + one exec account.
+Work through this after setup (`FIREBASE_SETUP.md`) and again after any change to the site, `exec/` code, or `firestore.rules`. Tick each box. You need **two different browsers or profiles** (e.g. Chrome + a private window, or Chrome + Safari) for the real-time tests, and one Co-President + one exec account.
 
 Test on the live URL **https://<project-id>.web.app/** and, if you've changed code, locally too (`python3 -m http.server 8000 --directory docs`).
 
@@ -26,12 +26,12 @@ Test on the live URL **https://<project-id>.web.app/** and, if you've changed co
 ## 2. Login & logout
 
 - [ ] Click **Exec Login** → the login page (`/exec/`) opens.
-- [ ] Log in as an **exec** → team area opens; the top bar shows their **name** and an **EXEC** badge.
+- [ ] Log in as an **exec** → team area opens; the top bar shows their **name** and an **EXEC** badge. Nothing on screen says "admin".
 - [ ] Refresh the page → still logged in (session persists).
 - [ ] Close the tab, reopen `/exec/` → still logged in.
 - [ ] Go back to the public site → the nav button now shows their first name + role instead of "Exec Login".
 - [ ] Click **Log out** → returns to the login screen; the nav button on the public site goes back to "Exec Login"; refreshing `/exec/` stays on the login screen.
-- [ ] Log in as an **admin** → badge says **ADMIN** (gold) and an **Admin panel** button is visible in the sidebar.
+- [ ] Log in as a **Co-President** → badge says **CO-PRESIDENT** (gold) and an **Co-President tools** button is visible in the sidebar.
 - [ ] While logged out, open `/exec/#general` directly → you get the login form, never any messages.
 
 ## 3. Wrong password & bad logins
@@ -41,42 +41,42 @@ Test on the live URL **https://<project-id>.web.app/** and, if you've changed co
 - [ ] Empty fields → "Enter your email and password."
 - [ ] Try several wrong passwords in a row → Firebase may eventually show "Too many attempts…" (its built-in rate limit, timing varies); a correct password works again after a short wait or via **Forgot password?**.
 - [ ] **Forgot password?** with an email typed → neutral "If that email has an exec account, a reset link is on its way." and the email arrives (check spam).
-- [ ] A **deactivated** member (Admin panel → Members → Active off) trying to log in is bounced with "…has been deactivated".
+- [ ] A **deactivated** member (Co-President tools → Members → Active off) trying to log in is bounced with "…has been deactivated".
 - [ ] An account that exists in Authentication but has **no** `users` profile sees "Waiting for approval" — and **no** channels or messages.
 
-## 4. Exec is blocked from admin actions
+## 4. Everyone else is blocked from Co-President actions
 
 Log in as an **exec** and confirm:
 
-- [ ] **No Admin panel** button anywhere.
-- [ ] In `#announcements`: messages are visible, but the message box is replaced by "Only admins can post in #announcements…". You cannot type or send.
+- [ ] **No Co-President tools** button anywhere, and no "admin" wording on screen.
+- [ ] In `#announcements`: messages are visible, but the message box is replaced by "Only the Co-Presidents can post in #announcements…". You cannot type or send.
 - [ ] No delete (trash) icon appears when hovering messages.
 - [ ] Can read and post in `#general`, `#events`, `#marketing`, `#finance`.
 - [ ] *(Optional, technical)* This is enforced by the database, not just hidden in the UI: in dev tools → Elements, un-hide the message box in `#announcements` and try to send as an exec — you should get a red "You don't have permission to post here" toast and the message must never appear.
 - [ ] Open the URL `/exec/#nonexistent-channel` → falls back to a real channel, no error.
 
-## 5. Admin-only announcement posting
+## 5. Co-President-only announcement posting
 
-Log in as an **admin**:
+Log in as a **Co-President**:
 
-- [ ] Open `#announcements` → the message box is available (lock tag says "Admins post"). Post "Test announcement".
-- [ ] It appears with your name, an **ADMIN** badge and a time.
+- [ ] Open `#announcements` → the message box is available (lock tag says "Co-Presidents post"). Post "Test announcement".
+- [ ] It appears with your name, a **CO-PRESIDENT** badge and a time.
 - [ ] Log in as an exec in the other browser → the announcement is visible there, read-only.
-- [ ] Admin panel → **Channels** → create `#sponsors` (leave "Only admins can post" off) → exec can see and post in it. Toggle "Admins post" on → exec's message box turns into the read-only notice **live**.
-- [ ] Archive `#sponsors` → it disappears from the exec's list (admins still see it under "Archived", read-only).
-- [ ] Admin panel → **Members**: change an exec to admin (confirm dialog) → on *their* screen the Admin panel button and admin badge appear immediately; change back → they disappear.
+- [ ] Co-President tools → **Channels** → create `#sponsors` (leave "Only the Co-Presidents can post" off) → exec can see and post in it. Toggle "Co-Presidents post" on → exec's message box turns into the read-only notice **live**.
+- [ ] Archive `#sponsors` → it disappears from the exec's list (Co-Presidents still see it under "Archived", read-only).
+- [ ] Co-President tools → **Members**: change an exec to Co-President (confirm dialog) → on *their* screen the Co-President tools button and the Co-President badge appear immediately; change back → they disappear.
 - [ ] Deactivate a logged-in exec → on their screen they are signed out within seconds with the deactivation notice.
 - [ ] You **cannot** change your own role or deactivate yourself (the controls are greyed out on your own row).
 - [ ] **Approvals** tab: have a brand-new account sign in → it appears here → Approve → their screen unlocks without a refresh.
-- [ ] Delete a message as admin (hover → trash → confirm) → it disappears for everyone.
+- [ ] Delete a message as Co-President (hover → trash → confirm) → it disappears for everyone.
 
 ## 6. Real-time messaging across two sessions
 
-Browser A = admin, Browser B = exec (different browsers/profiles, same channel e.g. `#general`):
+Browser A = Co-President, Browser B = exec (different browsers/profiles, same channel e.g. `#general`):
 
 - [ ] A types a message and presses **Enter** → it appears in B within ~1 second **without refreshing**.
 - [ ] B replies → appears in A the same way.
-- [ ] Every message shows the **sender's name** and a **timestamp**; admin messages carry the ADMIN badge.
+- [ ] Every message shows the **sender's name** and a **timestamp**; Co-President messages carry the CO-PRESIDENT badge.
 - [ ] **Shift+Enter** inserts a new line; **Enter** sends.
 - [ ] Pasted `https://…` links become clickable and open in a new tab.
 - [ ] Switching channels in A doesn't disturb B; a message posted in `#events` doesn't show in `#general`.
@@ -92,8 +92,8 @@ Browser A = admin, Browser B = exec (different browsers/profiles, same channel e
 - [ ] **File:** send a PDF/Word file under 2 MB with and without text. Other browser: file card shows name and size; clicking downloads it and it opens correctly.
 - [ ] Drag a file onto the chat → "Drop to attach" overlay appears. Paste a screenshot (Cmd/Ctrl+V) into the message box → it attaches.
 - [ ] A file over 2 MB, or a `.exe` / `.html` / `.svg`, is refused with a clear red message and nothing is attached.
-- [ ] In `#announcements` as an exec: no paperclip, no message box (read-only). As an admin: both work.
-- [ ] Admin hovers a file message → trash → confirm: it disappears for everyone.
+- [ ] In `#announcements` as an exec: no paperclip, no message box (read-only). As a Co-President: both work.
+- [ ] A Co-President hovers a file message → trash → confirm: it disappears for everyone.
 - [ ] On a phone: paperclip and send button are both visible next to the message box; the colours are blue/cream, not black.
 
 ## 7. Firebase config is NOT committed
@@ -120,7 +120,7 @@ git status --short                               # firebase-config.js must NOT b
 
 Against the Firebase emulators — not part of the repo, so they don't add any dependency:
 
-- **122 security-rule checks** (all pass; 49 of them cover attachments and the public flags collection): signed-out, exec, admin, deactivated, and profile-less accounts, including attack attempts — oversized/forged attachments, attaching pieces to someone else's message, writing someone else's flag, extra fields on the public flag document, spoofing another sender's name/role/uid, backdating timestamps, extra fields, 2,000+ character messages, self-promotion to admin, creating one's own profile, reading others' profiles, posting in archived/non-existent channels, editing/deleting messages, and renaming/deleting channels.
-- **93 end-to-end browser checks** (all pass): login/wrong password/no account enumeration, first-run channel setup, announcements read-only for execs, real-time delivery between two live sessions, persistence across reload, logout, admin panel (create/archive channel, approve, role change, deactivate — each reflected live on the other person's screen), the country prompt, photo and file uploads (a 1.2 MB file downloaded back byte-for-byte identical, size/type limits, chunk clean-up on delete), new channels being added to an existing database without touching old ones, flags appearing on the public Team section from a single read-only request, and mobile layout.
+- **122 security-rule checks** (all pass; 49 of them cover attachments and the public flags collection): signed-out, exec, Co-President, deactivated, and profile-less accounts, including attack attempts — oversized/forged attachments, attaching pieces to someone else's message, writing someone else's flag, extra fields on the public flag document, spoofing another sender's name/role/uid, backdating timestamps, extra fields, 2,000+ character messages, self-promotion to admin, creating one's own profile, reading others' profiles, posting in archived/non-existent channels, editing/deleting messages, and renaming/deleting channels.
+- **95 end-to-end browser checks** (all pass): login/wrong password/no account enumeration, first-run channel setup, announcements read-only for execs, real-time delivery between two live sessions, persistence across reload, logout, admin panel (create/archive channel, approve, role change, deactivate — each reflected live on the other person's screen), the country prompt, photo and file uploads (a 1.2 MB file downloaded back byte-for-byte identical, size/type limits, chunk clean-up on delete), new channels being added to an existing database without touching old ones, flags appearing on the public Team section from a single read-only request, and mobile layout.
 
 Not tested (needs your real accounts/inboxes): the live Behold Instagram feed (tested with a mock of its documented response format), the password-reset email, the live Firebase Hosting deploy, and the look on your own phone/browsers.

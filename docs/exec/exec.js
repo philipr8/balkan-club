@@ -71,7 +71,9 @@ const icon = (id, cls = 'icon') => { const s = document.createElementNS('http://
 const initials = name => (name || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase() || '?';
 const colorOf = str => { let h = 0; for (const c of String(str)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return 'c' + (h % 4); };
 const avatar = (name, key, size) => { const a = el('span', { class: `avatar ${colorOf(key || name)}`, 'aria-hidden': 'true', text: initials(name) }); if (size) a.style.setProperty('--s', size + 'px'); return a; };
-const roleBadge = role => el('span', { class: 'rolebadge' + (role === 'admin' ? ' is-admin' : ''), text: role });
+// The database value stays 'admin' (existing profiles + rules keep working); people only ever see "Co-President".
+const ROLE_LABEL = { admin: 'Co-President', exec: 'Exec' };
+const roleBadge = role => el('span', { class: 'rolebadge' + (role === 'admin' ? ' is-admin' : ''), text: ROLE_LABEL[role] || 'Exec' });
 const timeFmt = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
 const dayFmt = new Intl.DateTimeFormat(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
 function dayLabel(d) {
@@ -189,7 +191,7 @@ const authMessage = err => ({
   'auth/invalid-email': 'Enter a valid email address.',
   'auth/missing-password': 'Enter your password.',
   'auth/too-many-requests': 'Too many attempts. Wait a few minutes, or use “Forgot password?”.',
-  'auth/user-disabled': 'This account has been disabled. Contact an admin.',
+  'auth/user-disabled': 'This account has been disabled. Contact a Co-President.',
   'auth/network-request-failed': 'Network problem — check your connection and try again.',
 }[err?.code] || "Couldn't log you in. Please try again.");
 
@@ -233,7 +235,7 @@ function renderWho() {
   const a = $('#whoAv'); a.textContent = initials(p.name); a.className = `avatar ${colorOf(p.uid)}`;
   $('#whoName').textContent = p.name;
   $('#whoFlags').replaceChildren(...flagsFor(p.uid).map(flagImg));
-  const r = $('#whoRole'); r.textContent = p.role; r.className = 'rolebadge' + (p.role === 'admin' ? ' is-admin' : '');
+  const r = $('#whoRole'); r.textContent = ROLE_LABEL[p.role]; r.className = 'rolebadge' + (p.role === 'admin' ? ' is-admin' : '');
 }
 
 function watchProfile(user) {
@@ -248,7 +250,7 @@ function watchProfile(user) {
     }
     const p = snap.data();
     if (p.active !== true) {
-      S.loginNotice = 'Your exec account has been deactivated. Contact an admin if you think this is a mistake.';
+      S.loginNotice = 'Your exec account has been deactivated. Contact a Co-President if you think this is a mistake.';
       F.signOut(auth);
       return;
     }
@@ -293,7 +295,7 @@ function teardownChat() {
   if ($('#adminDlg').open) $('#adminDlg').close();
 }
 function onRoleChanged() {
-  toast(`Your role is now: ${S.profile.role}.`);
+  toast(`You're now ${S.profile.role === 'admin' ? 'a Co-President' : 'an Exec'}.`);
   $('#adminBox').hidden = !isAdmin();
   if (isAdmin()) watchAdmin(); else { stop('members'); stop('pending'); S.members = []; S.pendings = []; if ($('#adminDlg').open) $('#adminDlg').close(); }
   renderChannels(); ensureActive(); updateComposer();
@@ -352,7 +354,7 @@ function renderChannels() {
   }
   const more = live.filter(c => !used.has(c.id));
   if (more.length) { list.append(el('h3', { text: used.size ? 'More' : 'Channels' })); more.forEach(c => list.append(item(c))); }
-  if (!live.length && !archived.length) list.append(el('p', { class: 'sec-note', style: 'padding:12px', text: 'No channels yet. An admin needs to sign in once to set them up.' }));
+  if (!live.length && !archived.length) list.append(el('p', { class: 'sec-note', style: 'padding:12px', text: 'No channels yet. A Co-President needs to sign in once to set them up.' }));
   if (archived.length) { list.append(el('h3', { text: 'Archived' })); archived.forEach(c => list.append(item(c))); }
 }
 
@@ -383,7 +385,7 @@ function renderRoomHead() {
   $('#roomDesc').textContent = ch?.description || '';
   const tag = $('#roomTag');
   if (ch?.archived) { tag.hidden = false; tag.textContent = 'Archived'; tag.classList.remove('is-gold'); }
-  else if (ch?.adminOnly) { tag.hidden = false; tag.textContent = 'Admins post'; tag.classList.add('is-gold'); }
+  else if (ch?.adminOnly) { tag.hidden = false; tag.textContent = 'Co-Presidents post'; tag.classList.add('is-gold'); }
   else tag.hidden = true;
 }
 
@@ -422,7 +424,7 @@ function renderMessages() {
         cont ? null : el('div', { class: 'msg__meta' }, el('b', { text: m.senderName || 'Unknown' }), flagsSpan(m.uid), m.senderRole === 'admin' ? roleBadge('admin') : null, el('time', { datetime: when.toISOString(), text: timeFmt.format(when) })),
         m.text ? el('div', { class: 'msg__text' }, linkify(m.text)) : null,
         m.file ? attachmentEl(m) : null),
-      isAdmin() && !m.pending ? el('button', { class: 'msg__del', type: 'button', 'aria-label': 'Delete message', title: 'Delete message (admin)', onclick: () => deleteMessage(m) }, icon('i-trash')) : null);
+      isAdmin() && !m.pending ? el('button', { class: 'msg__del', type: 'button', 'aria-label': 'Delete message', title: 'Delete message (Co-President)', onclick: () => deleteMessage(m) }, icon('i-trash')) : null);
     frag.append(row);
     prev = { m, when };
   }
@@ -612,7 +614,7 @@ function updateComposer() {
   if (!ok) {
     $('#composerLockTxt').textContent = !ch ? 'Pick a channel to start chatting.'
       : ch.archived ? 'This channel is archived — it’s read-only.'
-      : `Only admins can post in #${ch.name || ch.id}. Execs can read it here.`;
+      : `Only the Co-Presidents can post in #${ch.name || ch.id}. Everyone else can read it here.`;
   } else input.placeholder = `Message #${ch.name || ch.id}`;
   updateSend();
 }
@@ -772,9 +774,9 @@ function renderMembersPane() {
     const roleSel = el('select', { 'aria-label': `Role for ${m.name}`, disabled: self,
       onchange: ev => {
         const v = ev.target.value;
-        if (!confirm(`Change ${m.name} to ${v}?` + (v === 'admin' ? '\n\nAdmins can manage members, channels and announcements.' : ''))) { ev.target.value = m.role; return; }
-        guarded(() => F.updateDoc(F.doc(db, 'users', m.uid), { role: v }), `${m.name} is now ${v}.`);
-      } }, el('option', { value: 'exec', text: 'Exec', selected: m.role !== 'admin' }), el('option', { value: 'admin', text: 'Admin', selected: m.role === 'admin' }));
+        if (!confirm(`Make ${m.name} ${v === 'admin' ? 'a Co-President' : 'an Exec'}?` + (v === 'admin' ? '\n\nCo-Presidents can manage members, channels and announcements.' : ''))) { ev.target.value = m.role; return; }
+        guarded(() => F.updateDoc(F.doc(db, 'users', m.uid), { role: v }), `${m.name} is now ${v === 'admin' ? 'a Co-President' : 'an Exec'}.`);
+      } }, el('option', { value: 'exec', text: 'Exec', selected: m.role !== 'admin' }), el('option', { value: 'admin', text: 'Co-President', selected: m.role === 'admin' }));
     const act = el('input', { type: 'checkbox', checked: !off, disabled: self, 'aria-label': `Active: ${m.name}`,
       onchange: ev => {
         const v = ev.target.checked;
@@ -795,14 +797,14 @@ function renderPendingPane() {
   for (const p of S.pendings) {
     const guess = (p.email || '').split('@')[0].replace(/[._-]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
     const name = el('input', { type: 'text', value: guess, maxlength: 80, 'aria-label': `Display name for ${p.email}` });
-    const role = el('select', { 'aria-label': `Role for ${p.email}` }, el('option', { value: 'exec', text: 'Exec' }), el('option', { value: 'admin', text: 'Admin' }));
+    const role = el('select', { 'aria-label': `Role for ${p.email}` }, el('option', { value: 'exec', text: 'Exec' }), el('option', { value: 'admin', text: 'Co-President' }));
     pane.append(el('div', { class: 'row' },
       avatar(guess, p.uid, 40),
       el('div', { class: 'row__main' }, name, el('span', { class: 'row__sub', text: p.email })),
       el('div', { class: 'row__ctl' }, role,
         el('button', { class: 'btn btn--sm', type: 'button', text: 'Approve', onclick: () => {
           const n = name.value.trim(); if (!n) { name.focus(); return; }
-          if (role.value === 'admin' && !confirm(`Make ${n} an admin?`)) return;
+          if (role.value === 'admin' && !confirm(`Make ${n} a Co-President?`)) return;
           guarded(async () => {
             const b = F.writeBatch(db);
             b.set(F.doc(db, 'users', p.uid), { name: n, email: p.email, role: role.value, active: true, createdAt: F.serverTimestamp() });
@@ -818,24 +820,24 @@ function renderChannelsPane() {
   const pane = $('#pane-channels');
   if (!$('#newChForm', pane)) {
     pane.replaceChildren(
-      el('p', { class: 'sec-note', text: 'Create channels, mark them admins-only (like #announcements), or archive ones you no longer need. Archived channels stay readable by admins and are hidden from execs. Channels are archived, never deleted.' }),
+      el('p', { class: 'sec-note', text: 'Create channels, mark them Co-Presidents-only (like #announcements), or archive ones you no longer need. Archived channels stay readable by Co-Presidents and are hidden from everyone else. Channels are archived, never deleted.' }),
       el('form', { id: 'newChForm', class: 'formrow', autocomplete: 'off', onsubmit: onCreateChannel },
         el('label', { class: 'field' }, el('span', { text: 'Name' }), el('input', { id: 'newChName', type: 'text', required: true, maxlength: 30, placeholder: 'e.g. sponsors' })),
         el('label', { class: 'field' }, el('span', { text: 'Description (optional)' }), el('input', { id: 'newChDesc', type: 'text', maxlength: 140, placeholder: 'What is this channel for?' })),
         el('button', { class: 'btn btn--sm', type: 'submit', text: 'Create' }),
-        el('label', { class: 'switch' }, el('input', { id: 'newChAdminOnly', type: 'checkbox' }), 'Only admins can post')),
+        el('label', { class: 'switch' }, el('input', { id: 'newChAdminOnly', type: 'checkbox' }), 'Only Co-Presidents can post')),
       el('div', { id: 'chanRows' }));
   }
   const rows = $('#chanRows'); rows.replaceChildren();
   rows.style.display = 'grid'; rows.style.gap = '10px';
   for (const c of S.channels) {
     const onlyAdm = el('input', { type: 'checkbox', checked: !!c.adminOnly,
-      onchange: ev => guarded(() => F.updateDoc(F.doc(db, 'channels', c.id), { adminOnly: ev.target.checked }), `#${c.name || c.id} is now ${ev.target.checked ? 'admins-only' : 'open to all execs'}.`) });
+      onchange: ev => guarded(() => F.updateDoc(F.doc(db, 'channels', c.id), { adminOnly: ev.target.checked }), `#${c.name || c.id} is now ${ev.target.checked ? 'Co-Presidents-only' : 'open to everyone'}.`) });
     rows.append(el('div', { class: 'row' + (c.archived ? ' is-off' : '') },
       el('span', { class: 'avatar c2', 'aria-hidden': 'true', style: '--s:40px' }, icon('i-hash')),
       el('div', { class: 'row__main' }, el('b', { text: '#' + (c.name || c.id) }), el('span', { class: 'row__sub', text: c.description || 'No description' })),
       el('div', { class: 'row__ctl' },
-        el('label', { class: 'switch' }, onlyAdm, 'Admins post'),
+        el('label', { class: 'switch' }, onlyAdm, 'Co-Presidents post'),
         el('button', { class: 'btn btn--ghost btn--sm', type: 'button', text: c.archived ? 'Unarchive' : 'Archive',
           onclick: () => { if (!c.archived && !confirm(`Archive #${c.name || c.id}? Execs will no longer see it.`)) return; guarded(() => F.updateDoc(F.doc(db, 'channels', c.id), { archived: !c.archived }), c.archived ? 'Channel restored.' : 'Channel archived.'); } }))));
   }
