@@ -9,6 +9,7 @@
   /* Brand palette — straight from the Brand Guide */
   --black: #111111;
   --white: #ffffff;
+  --cream-2: #F8EBD2;   /* a slightly deeper cream, to alternate with --cream */
   --red:   #C8102E;
   --blue:  #0F4C81;
   --gold:  #F2C230;
@@ -83,21 +84,21 @@
   --accent-ink: var(--black);
   --glow: rgba(255, 255, 255, 0.12);
 }
-.t-white {
-  --bg: var(--white);
+.t-white {   /* main page colour: warm cream, with white cards */
+  --bg: var(--cream);
   --fg: var(--black);
   --fg-2: rgba(17, 17, 17, 0.76);
   --fg-3: rgba(17, 17, 17, 0.64);
   --line: rgba(17, 17, 17, 0.12);
   --line-2: rgba(17, 17, 17, 0.26);
-  --surface: var(--cream);
-  --surface-2: #f7ecd9;
+  --surface: var(--white);
+  --surface-2: rgba(17, 17, 17, 0.045);
   --accent: var(--red);
   --accent-ink: var(--white);
   --glow: rgba(15, 76, 129, 0.07);
 }
-.t-cream {
-  --bg: var(--cream);
+.t-cream {   /* alternate band: deeper cream */
+  --bg: var(--cream-2);
   --fg: var(--black);
   --fg-2: rgba(17, 17, 17, 0.74);
   --fg-3: rgba(17, 17, 17, 0.62);
@@ -117,7 +118,7 @@
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 8px); }
 body {
   margin: 0;
-  background: var(--white);
+  background: var(--cream);
   color: var(--black);
   font-family: var(--body);
   font-size: 1rem;
@@ -241,7 +242,7 @@ ul, ol { padding: 0; list-style: none; }
   color: var(--ink);
 }
 .nav.is-solid {
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 248, 237, 0.95);
   -webkit-backdrop-filter: saturate(150%) blur(18px);
   backdrop-filter: saturate(150%) blur(18px);
   border-color: rgba(13, 43, 76, 0.12);
@@ -292,7 +293,7 @@ body.menu-open .nav .nav__toggle { color: var(--ink); }
 
 .menu {
   position: fixed; inset: 0; z-index: 90;
-  background: rgba(255, 255, 255, 0.98);
+  background: rgba(255, 248, 237, 0.98);
   -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
   display: grid; align-content: center; gap: 4px;
   padding: calc(var(--nav-h) + 16px) var(--gutter) 32px;
@@ -436,7 +437,7 @@ body.menu-open { overflow: hidden; }
 /* --------------------------------------------------------------------------
    Flags ribbon
    -------------------------------------------------------------------------- */
-.ribbon { background: var(--red); color: #fff; overflow: hidden; position: relative; z-index: 2; padding-block: 16px; border-block: 4px solid var(--black); }
+.ribbon { background: var(--red); color: #fff; overflow: hidden; position: relative; z-index: 2; padding-block: 16px; border-block: 4px solid var(--ink); }
 .ribbon__track { display: flex; width: max-content; animation: marquee 48s linear infinite; }
 .ribbon:hover .ribbon__track { animation-play-state: paused; }
 .ribbon__set { display: flex; flex: none; }
@@ -459,7 +460,7 @@ body.menu-open { overflow: hidden; }
 .tile .cap { font-weight: 600; font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; }
 .tile--red { background: var(--red); color: #fff; }
 .tile--blue { background: var(--blue); color: #fff; }
-.tile--wide { grid-column: 1 / -1; background: var(--black); color: var(--cream); min-height: 0; grid-template-columns: 1fr auto; align-items: center; }
+.tile--wide { grid-column: 1 / -1; background: var(--ink); color: var(--cream); min-height: 0; grid-template-columns: 1fr auto; align-items: center; }
 .tile--wide p { font-family: var(--head); font-weight: 700; font-size: clamp(1.3rem, 2.4vw, 1.8rem); line-height: 1.15; }
 .tile--wide .mark { color: var(--gold); }
 .tile::after { content: ""; position: absolute; right: -40px; top: -40px; width: 140px; height: 140px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); }

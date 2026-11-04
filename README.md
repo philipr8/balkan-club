@@ -19,15 +19,15 @@ Website for the Association Of Balkan Students at Queen's University, plus an op
 
 ## Brand
 
-The site is **white first, with red, blue and yellow** (no green, no black backgrounds); the opening hero slide is red-led.
+The site is **cream first, with red, blue and yellow** (no green, no black backgrounds); the opening hero slide is red-led. Pages are warm cream (`--cream`), alternating with a slightly deeper cream (`--cream-2`); cards and inputs are white.
 
 | Colour | Hex | | Colour | Hex |
 |---|---|---|---|---|
-| White | `#FFFFFF` | | Sun Gold (yellow) | `#F2C230` |
-| Balkan Red | `#C8102E` | | Warm Cream | `#FFF8ED` |
+| Warm Cream (main) | `#FFF8ED` | | Sun Gold (yellow) | `#F2C230` |
+| Balkan Red | `#C8102E` | | White (cards, inputs) | `#FFFFFF` |
 | Balkan Blue | `#0F4C81` | | Ink (text, navy) | `#0D2B4C` / `#111111` |
 
-The logo (`docs/images/logo.jpg`) is only ever placed on white or cream, never recoloured or stretched. Tokens live at the top of `docs/style.css` (`:root`). The first slide (hero) is red in the middle with blue, yellow and white gathering around the edges; the "ABSQU" title is white. Everything below it is white-first.
+The logo (`docs/images/logo.jpg`) is only ever placed on white or cream, never recoloured or stretched. Tokens live at the top of `docs/style.css` (`:root`). The first slide (hero) is red in the middle with blue, yellow and white gathering around the edges; the "ABSQU" title is white. Everything below it is cream-first.
 
 ## Project structure
 

@@ -5,8 +5,8 @@
   --black: #111111; --white: #fff; --red: #C8102E; --blue: #0F4C81; --gold: #F2C230; --cream: #FFF8ED;
   --head: "Baloo 2", ui-rounded, "Arial Rounded MT Bold", system-ui, sans-serif;
   --body: "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  /* White-first theme: white page, warm-cream sidebar, navy/blue for text accents, gold for buttons/selection */
-  --bg: #ffffff; --bg-2: #FFF8ED; --bg-3: #f4ead8; --ink: #0D2B4C; --accent: #0F4C81; --accent-text: #0F4C81;
+  /* Cream-first theme: warm-cream page, deeper-cream sidebar, white cards/inputs, blue text accents, gold buttons/selection */
+  --bg: #FFF8ED; --bg-2: #F6E9CF; --bg-3: #EDDDBF; --ink: #0D2B4C; --accent: #0F4C81; --accent-text: #0F4C81;
   --fg: #111111; --fg-2: rgba(17, 17, 17, 0.8); --fg-3: rgba(17, 17, 17, 0.64);
   --line: rgba(17, 17, 17, 0.12); --line-2: rgba(17, 17, 17, 0.26);
   --surface: rgba(17, 17, 17, 0.04); --surface-2: rgba(17, 17, 17, 0.08);
@@ -74,12 +74,12 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0
   radial-gradient(50% 40% at 10% 6%, rgba(200, 16, 46, 0.1), transparent 70%),
   radial-gradient(45% 40% at 92% 10%, rgba(242, 194, 48, 0.2), transparent 70%),
   radial-gradient(45% 45% at 82% 100%, rgba(15, 76, 129, 0.12), transparent 70%),
-  #fff; }
+  #FFF8ED; }
 .card { width: min(100%, 440px); display: grid; gap: 16px; padding: clamp(24px, 5vw, 38px); border-radius: 28px; background: #fff; border: 1.5px solid var(--line); box-shadow: 0 30px 70px -30px rgba(13, 43, 76, 0.35), 0 2px 0 rgba(13, 43, 76, 0.04); }
 .card h1 { font-family: var(--head); font-weight: 700; font-size: clamp(2rem, 6vw, 2.6rem); line-height: 1; }
 .badge-ico { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; background: var(--gold); color: var(--black); font-size: 1.4rem; }
 .field { display: grid; gap: 7px; font-weight: 600; font-size: 0.8125rem; letter-spacing: 0.04em; color: var(--fg-2); }
-.field input, .composer textarea, .dlg input[type="text"], .dlg select { width: 100%; min-height: 50px; padding: 12px 16px; border-radius: 14px; background: var(--bg); border: 1.5px solid var(--line-2); color: var(--fg); font-size: 1rem; font-weight: 400; letter-spacing: 0; }
+.field input, .composer textarea, .dlg input[type="text"], .dlg select { width: 100%; min-height: 50px; padding: 12px 16px; border-radius: 14px; background: #fff; border: 1.5px solid var(--line-2); color: var(--fg); font-size: 1rem; font-weight: 400; letter-spacing: 0; }
 .field input:focus, .composer textarea:focus, .dlg input[type="text"]:focus, .dlg select:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(15, 76, 129, 0.18); }
 .field__pw { position: relative; display: block; }
 .field__pw input { padding-right: 52px; }
@@ -175,7 +175,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0
 .att__meta b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; font-size: 0.9375rem; }
 .att__meta span { font-size: 0.8125rem; color: var(--fg-3); }
 .att__dl { color: var(--blue); font-size: 1.15rem; }
-.dropzone { position: absolute; inset: 0; z-index: 8; display: grid; place-content: center; justify-items: center; gap: 6px; text-align: center; background: rgba(255, 255, 255, 0.94); border: 3px dashed var(--blue); border-radius: 18px; margin: 10px; pointer-events: none; font-size: 1rem; }
+.dropzone { position: absolute; inset: 0; z-index: 8; display: grid; place-content: center; justify-items: center; gap: 6px; text-align: center; background: rgba(255, 248, 237, 0.95); border: 3px dashed var(--blue); border-radius: 18px; margin: 10px; pointer-events: none; font-size: 1rem; }
 .dropzone .icon { font-size: 2.2rem; color: var(--blue); }
 .dropzone b { font-family: var(--head); font-size: 1.8rem; line-height: 1; }
 .dropzone span { color: var(--fg-2); }
