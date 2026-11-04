@@ -2,7 +2,8 @@ rules_version = '2';
 
 // ABSQU Exec area — Firestore security rules.
 //
-// Role model: users/{uid} holds { name, email, role: 'admin'|'exec', active: bool }.
+// Role model: users/{uid} holds { name, email, role: 'admin'|'Co-President'|'exec', active: bool }.
+// 'Co-President' and 'admin' are the same thing (full access); anything else is a normal exec.
 // Every rule below keys off that document. A signed-in account WITHOUT an active
 // users/{uid} document can read and write nothing (except asking to be approved).
 //
@@ -33,7 +34,7 @@ service cloud.firestore {
         && userDoc().active == true;
     }
     function isAdmin() {
-      return isActive() && userDoc().role == 'admin';
+      return isActive() && userDoc().role in ['admin', 'Co-President'];
     }
     function channelData(cid) {
       return get(/databases/$(database)/documents/channels/$(cid)).data;
@@ -45,7 +46,7 @@ service cloud.firestore {
         && d.keys().hasAll(['name', 'email', 'role', 'active'])
         && d.name is string && d.name.size() > 0 && d.name.size() <= 80
         && d.email is string && d.email.size() <= 200
-        && d.role in ['admin', 'exec']
+        && d.role in ['admin', 'Co-President', 'exec']
         && d.active is bool;
     }
 
@@ -59,7 +60,7 @@ service cloud.firestore {
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'role', 'active'])
         && request.resource.data.name is string
         && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 80
-        && request.resource.data.role in ['admin', 'exec']
+        && request.resource.data.role in ['admin', 'Co-President', 'exec']
         && request.resource.data.active is bool
         && (request.auth.uid != uid
             || (request.resource.data.role == resource.data.role
@@ -121,7 +122,7 @@ service cloud.firestore {
           && request.resource.data.keys().hasAll(['text', 'uid', 'senderName', 'senderRole', 'createdAt'])
           && request.resource.data.uid == request.auth.uid
           && request.resource.data.senderName == userDoc().name
-          && request.resource.data.senderRole == userDoc().role
+          && request.resource.data.senderRole == (isAdmin() ? 'admin' : userDoc().role)
           && request.resource.data.text is string
           && request.resource.data.text.size() <= 2000
           && (request.resource.data.text.size() > 0 || 'file' in request.resource.data.keys())

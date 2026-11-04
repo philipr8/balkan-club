@@ -25,7 +25,7 @@ Roles are stored in Firestore: one document per person at `users/<their UID>` wi
 ```
 name    (string)   "Philip Radeff"
 email   (string)   "philip@example.com"
-role    (string)   "admin"  or  "exec"    ("admin" is what the site calls a Co-President)
+role    (string)   "Co-President" (or "admin", same thing)  or  "exec"
 active  (boolean)  true     (false = deactivated, locked out immediately)
 ```
 
@@ -145,7 +145,7 @@ You create the **two Co-President** profiles manually — this is the one thing 
 6. Click **Save**.
 7. Back on the `users` collection click **Add document** and repeat for **Alexander Jakov** (his UID, `role` = `admin`).
 
-> ⚠️ Common slips: `active` must be the **boolean** `true` (pick the type from the dropdown), not the text "true". `role` must be lower-case `admin`. The Document ID must be the UID, not the email.
+> ⚠️ Common slips: `active` must be the **boolean** `true` (pick the type from the dropdown), not the text "true". `role` must be exactly `Co-President` (capital C and P, hyphen) or lower-case `admin`; both give full Co-President access, anything else is a normal exec. The Document ID must be the UID, not the email.
 
 ### 6c. Give the 13 execs their role
 

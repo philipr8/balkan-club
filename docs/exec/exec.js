@@ -255,7 +255,7 @@ function watchProfile(user) {
       return;
     }
     const prev = S.profile;
-    S.profile = { uid: user.uid, name: p.name || user.email, email: p.email || user.email, role: p.role === 'admin' ? 'admin' : 'exec' };
+    S.profile = { uid: user.uid, name: p.name || user.email, email: p.email || user.email, role: (p.role === 'admin' || p.role === 'Co-President') ? 'admin' : 'exec' };
     renderWho();
     store.set({ name: S.profile.name, role: S.profile.role });
     if (!S.chatOn) startChat();
@@ -711,7 +711,7 @@ $('#scrim').addEventListener('click', closeDrawer);
 function watchAdmin() {
   stop('members'); stop('pending');
   S.unsubs.members = F.onSnapshot(F.collection(db, 'users'), snap => {
-    S.members = snap.docs.map(d => ({ uid: d.id, ...d.data() }))
+    S.members = snap.docs.map(d => { const u = d.data(); return { uid: d.id, ...u, role: (u.role === 'admin' || u.role === 'Co-President') ? 'admin' : 'exec' }; })
       .sort((a, b) => (a.role === 'admin' ? 0 : 1) - (b.role === 'admin' ? 0 : 1) || (a.name || '').localeCompare(b.name || ''));
     renderAdmin('members');
   }, err => listenerError('members', err));
