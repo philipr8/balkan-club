@@ -346,17 +346,23 @@
     const team = $('#team');
     if (!team) return;
     const CACHE = 'absqu.flags', TTL = 10 * 60 * 1000;
-    const NAMES = { al: 'Albania', ba: 'Bosnia & Herzegovina', bg: 'Bulgaria', gr: 'Greece', hr: 'Croatia', me: 'Montenegro', mk: 'North Macedonia', ro: 'Romania', rs: 'Serbia', si: 'Slovenia', xk: 'Kosovo' };
+    const NAMES = { al: 'Albania', ba: 'Bosnia & Herzegovina', bg: 'Bulgaria', ge: 'Georgia', gr: 'Greece', hr: 'Croatia', me: 'Montenegro', mk: 'North Macedonia', ro: 'Romania', rs: 'Serbia', si: 'Slovenia', xk: 'Kosovo' };
     const norm = t => String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
     const read = () => { try { const c = JSON.parse(sessionStorage.getItem(CACHE) || 'null'); return c && Date.now() - c.at < TTL ? c.map : null; } catch (e) { return null; } };
     const write = map => { try { sessionStorage.setItem(CACHE, JSON.stringify({ at: Date.now(), map })); } catch (e) { /* storage blocked */ } };
 
+    // Flags are already in the HTML (set by the club), so they show with no network at all.
+    // A flag a member picked themselves in the exec area replaces theirs; choosing "no flag" removes it.
     function apply(map) {
       $$('.pname', team).forEach(n => {
-        if (n.nextElementSibling?.classList.contains('flags')) return;
-        const codes = (map[norm(n.textContent)] || []).filter(c => NAMES[c]).slice(0, 2);
+        const entry = map[norm(n.textContent)];
+        if (!Array.isArray(entry)) return;                        // member hasn't answered: keep the HTML default
+        const cur = n.nextElementSibling?.classList.contains('flags') ? n.nextElementSibling : null;
+        if (cur && cur.dataset.src === 'live') return;
+        cur?.remove();
+        const codes = entry.filter(c => NAMES[c]).slice(0, 2);
         if (!codes.length) return;
-        const wrap = document.createElement('span'); wrap.className = 'flags';
+        const wrap = document.createElement('span'); wrap.className = 'flags'; wrap.dataset.src = 'live';
         codes.forEach(c => {
           const i = new Image(); i.className = 'flag-ico'; i.alt = NAMES[c]; i.title = NAMES[c]; i.width = 22; i.height = 16; i.decoding = 'async';
           i.src = `https://flagcdn.com/w40/${c}.png`; i.srcset = `https://flagcdn.com/w80/${c}.png 2x`;

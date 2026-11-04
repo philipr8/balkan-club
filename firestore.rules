@@ -156,7 +156,7 @@ service cloud.firestore {
     // just the display name and up to two country codes. No emails, no roles.
     function validCountries(c) {
       return c is list && c.size() <= 2
-        && c.hasOnly(['al', 'ba', 'bg', 'gr', 'hr', 'me', 'mk', 'ro', 'rs', 'si', 'xk']);
+        && c.hasOnly(['al', 'ba', 'bg', 'ge', 'gr', 'hr', 'me', 'mk', 'ro', 'rs', 'si', 'xk']);
     }
 
     match /team/{uid} {

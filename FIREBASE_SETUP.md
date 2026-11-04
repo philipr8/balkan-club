@@ -83,7 +83,7 @@ I chose this over Firebase *custom claims* because setting custom claims require
 
 > Do this again any time `firestore.rules` changes in the repo.
 
-What these rules guarantee (checked by an automated suite of 121 tests before this was handed over):
+What these rules guarantee (checked by an automated suite of 122 tests before this was handed over):
 
 - Nobody who is signed out can read or write anything.
 - A signed-in account with **no active profile** can read/write nothing (it can only ask an admin for approval).
@@ -238,7 +238,7 @@ In any channel where you can post, click the **paperclip** (or drag a file onto 
 > **Why 2 MB?** Firebase's file storage product (Cloud Storage) now needs the paid Blaze plan, so to stay on the free plan the files are stored inside Firestore, in small pieces, alongside the message. Free-plan Firestore holds 1 GB in total and allows 50,000 reads a day — plenty for an exec team, but it's meant for flyers, forms and screenshots, **not** photo albums or video. For those, post a Drive/Dropbox link.
 
 ### Country flags
-The first time each person logs in, a pop-up asks **"Where are you from?"**. They pick one country (or two, if they're mixed) from the 11 Balkan countries, or choose "No flag, thanks", or "Ask me later" (it asks again next login). The flag then shows:
+The first time each person logs in, a pop-up asks **"Where are you from?"**. They pick one country (or two, if they're mixed) from the 11 Balkan countries (plus Georgia), or choose "No flag, thanks", or "Ask me later" (it asks again next login). The club has already set a starting flag for every exec in the website's HTML (`docs/index.html`, Team section), so flags show on the site straight away. If a member picks something different in the pop-up, theirs replaces the default; "No flag, thanks" removes it. The flag shows:
 
 - next to their name on the **public website's Team section** — matched by name, so the name in **Admin panel → Members** must match the name on the website exactly (renaming someone there also updates their flag entry), and
 - next to their name in the exec chat.

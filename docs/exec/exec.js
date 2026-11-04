@@ -35,9 +35,9 @@ const CHANNEL_GROUPS = [
   { label: 'Teams', ids: ['events', 'marketing', 'finance', 'student-reps', 'communications'] },
 ];
 
-// Countries offered for the website flag (same 11 as the public site). Codes are validated by firestore.rules too.
+// Countries offered for the website flag (the 11 on the public site, plus Georgia). Codes are validated by firestore.rules too.
 const COUNTRIES = [
-  ['al', 'Albania'], ['ba', 'Bosnia & Herzegovina'], ['bg', 'Bulgaria'], ['hr', 'Croatia'], ['gr', 'Greece'], ['xk', 'Kosovo'],
+  ['al', 'Albania'], ['ba', 'Bosnia & Herzegovina'], ['bg', 'Bulgaria'], ['hr', 'Croatia'], ['ge', 'Georgia'], ['gr', 'Greece'], ['xk', 'Kosovo'],
   ['me', 'Montenegro'], ['mk', 'North Macedonia'], ['ro', 'Romania'], ['rs', 'Serbia'], ['si', 'Slovenia'],
 ].map(([code, name]) => ({ code, name }));
 const COUNTRY_NAME = Object.fromEntries(COUNTRIES.map(c => [c.code, c.name]));

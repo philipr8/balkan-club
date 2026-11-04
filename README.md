@@ -85,7 +85,7 @@ Everything public is in `docs/index.html`; find sections by their `id`:
 
 **Instagram posts:** shown automatically from a Behold feed — paste its URL into `data-feed` on `#feed` (steps in [INSTAGRAM_SETUP.md](INSTAGRAM_SETUP.md)). With no feed URL, a "Follow @abs_qu" card shows.
 
-**Team flags:** each exec picks their country in the exec area; the site adds the flag next to the matching name in `#team` (names are matched, so keep them spelled the same as in the exec Members list).
+**Team flags:** each name in `#team` has its flag in the HTML (`<span class="flags">` right after the `.pname`). Execs can also pick their own in the exec area; that replaces the default (matched by name, so keep names spelled the same as in the exec Members list). To change someone's default, edit the `<img>` after their name: `src`, `srcset` (`flagcdn.com/w40/<code>.png`) and `alt`.
 
 ## Exec area
 
